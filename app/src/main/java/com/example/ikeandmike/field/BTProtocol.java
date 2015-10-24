@@ -9,8 +9,7 @@ class BTProtocol {
   public static int TeamNumber = -1;
 
   public enum Type{
-    STORAGE,
-    SUPPLY,
+    FIELD,
     STOP,
     RESUME,
     ALERT,
@@ -28,4 +27,6 @@ class BTProtocol {
     this.messageType = type;
     this.data = data;
   }
+
+  public static final int REQUEST_ENABLE_BT  = 1;
 }
