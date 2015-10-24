@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
@@ -94,6 +96,47 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     protected void onDestroy(){
         super.onDestroy();
         comms.close();
+    }
+
+    public void updateState(View view) {
+        switch(view.getId()) {
+            case R.id.Storage1:
+                Log.e("Success:", "Storage 1 Pressed");
+                break;
+            case R.id.Storage2:
+                Log.e("Success:", "Storage 2 Pressed");
+                break;
+            case R.id.Storage3:
+                Log.e("Success:", "Storage 3 Pressed");
+                break;
+            case R.id.Storage4:
+                Log.e("Success:", "Storage 4 Pressed");
+                break;
+            case R.id.Supply1:
+                Log.e("Success:", "Supply 1 Pressed");
+                break;
+            case R.id.Supply2:
+                Log.e("Success:", "Supply 2 Pressed");
+                break;
+            case R.id.Supply3:
+                Log.e("Success:", "Supply 3 Pressed");
+                break;
+            case R.id.Supply4:
+                Log.e("Success:", "Supply 4 Pressed");
+                break;
+
+            case R.id.toggleField:
+                Log.e("Success:", "Field Access Toggled");
+                break;
+            case R.id.Resume:
+                Log.e("Success:", "Resume Button Pressed");
+                break;
+            case R.id.Stop:
+                Log.e("Success", "Stop Button Pressed");
+                break;
+            default:
+                break;
+        }
     }
 }
 
