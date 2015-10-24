@@ -1,5 +1,6 @@
 # android studio stuff
 .idea/
+.gradle
 *.iml
 /local.properties
 /.idea/workspace.xml
