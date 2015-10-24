@@ -6,27 +6,125 @@
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <TextView android:id="@+id/fullscreen_content" android:layout_width="match_parent"
-        android:layout_height="match_parent" android:keepScreenOn="true" android:textColor="#33b5e5"
-        android:textStyle="bold" android:textSize="50sp" android:gravity="center"
-        android:text="@string/dummy_content" />
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
-    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
 
-        <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:background="@color/black_overlay" android:orientation="horizontal"
-            tools:ignore="UselessParent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
-            <Button android:id="@+id/dummy_button" style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:text="@string/dummy_button" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:weightSum="1">
 
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toggle Field"
+                android:textOff="No Field"
+                android:textOn="Field"
+                android:id="@+id/toggleField"
+                android:checked="false"
+                android:clickable="false"
+                android:layout_gravity="top|center_horizontal" />
         </LinearLayout>
-    </FrameLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:columnCount="4"
+            android:rowCount="10">
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supply 4"
+                android:id="@+id/Supply4"
+                android:checked="false"
+                android:textOff="4: Empty"
+                android:textOn="4: Full"
+                android:onClick="updateState"
+                tools:ignore="InvalidId" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supply 3"
+                android:id="@+id/Supply3"
+                android:textOff="3: Empty"
+                android:textOn="3: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supply 2"
+                android:id="@+id/Supply2"
+                android:textOff="2: Empty"
+                android:textOn="2: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supply 1"
+                android:id="@+id/Supply1"
+                android:textOff="1: Empty"
+                android:textOn="1: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Storage 4"
+                android:id="@+id/Storage4"
+                android:textOff="4: Empty"
+                android:textOn="4: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Storage 3"
+                android:id="@+id/Storage3"
+                android:textOff="3: Empty"
+                android:textOn="3: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Storage 2"
+                android:id="@+id/Storage2"
+                android:textOff="2: Empty"
+                android:textOn="2: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Storage 1"
+                android:id="@+id/Storage1"
+                android:textOff="1: Empty"
+                android:textOn="1: Full"
+                android:onClick="updateState"
+                android:checked="false" />
+
+        </GridLayout>
+
+    </LinearLayout>
 
 </FrameLayout>
