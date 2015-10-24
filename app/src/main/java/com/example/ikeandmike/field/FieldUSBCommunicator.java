@@ -104,7 +104,7 @@ public class FieldUSBCommunicator {
         Log.d(TAG, "Closing port");
         try {
             fieldPort.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             //Ignore any exceptions when closing
         }
         fieldPort = null;
