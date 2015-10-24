@@ -1,11 +1,7 @@
 package com.example.ikeandmike.field;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
-import android.content.Intent;
-import android.os.ParcelUuid;
 import android.util.Log;
 
 import java.io.InputStream;
@@ -30,8 +26,8 @@ public class BTCommunicator implements BluetoothCallback {
 
     private static BTCommunicator instance;
 
-    public static BTCommunicator getInstance(){
-        if (instance == null){
+    public static BTCommunicator getInstance() {
+        if (instance == null) {
             instance = new BTCommunicator();
         }
         return instance;
@@ -57,7 +53,7 @@ public class BTCommunicator implements BluetoothCallback {
 
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
-                if (foundRobot(device)){
+                if (foundRobot(device)) {
                     return true;
                 }
             }
@@ -87,7 +83,7 @@ public class BTCommunicator implements BluetoothCallback {
 
     }
 
-    public void addConnectorListener(BluetoothCallback listener){
+    public void addConnectorListener(BluetoothCallback listener) {
         connector.addListener(listener);
     }
 
@@ -98,25 +94,25 @@ public class BTCommunicator implements BluetoothCallback {
         connector.execute();
     }
 
-    public void close(){
+    public void close() {
         connector.close();
     }
 
-    public void asyncSendStopMessage(){
-        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.STOP, (byte)0));
+    public void asyncSendStopMessage() {
+        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.STOP, (byte) 0));
     }
 
-    public void asyncSendResumeMessage(){
-        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.RESUME, (byte)0));
+    public void asyncSendResumeMessage() {
+        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.RESUME, (byte) 0));
     }
 
     public void asyncSendFieldData() {
         // start thread for sending BT data
         fieldDataExecutor = new ScheduledThreadPoolExecutor(8);
 
-        //call run() on SendMessageRunnable every 10ms
+        //call run() on SendFieldRunnable every 10ms
         fieldDataExecutor.scheduleAtFixedRate(
-                new SendMessageRunnable(os, BTProtocol.Type.FIELD, (byte) 0),
+                new SendFieldRunnable(os),
                 0l,
                 100,
                 TimeUnit.MILLISECONDS);
