@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -17,52 +16,48 @@ import java.util.concurrent.TimeUnit;
 public class Main extends AppCompatActivity {
 
     ScheduledThreadPoolExecutor fieldDataExecutor;
+    BTCommunicator comms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
-        //check if you don't have bluetooth enabled
-        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) {
-            // Device does not support Bluetooth
-            Toast.makeText(Main.this, "You don't have bluetooth!", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            if (!mBluetoothAdapter.isEnabled()) {
+
+        comms = new BTCommunicator(this);
+        if (comms.exists()) {
+            if (comms.enabled()){
+                if (comms.detected()){
+                    // this is asynchronous, and it should respond somehow...
+                    comms.connect();
+                }
+                else {
+                    Toast.makeText(Main.this, "No robot found!", Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, BTProtocol.REQUEST_ENABLE_BT);
             }
-            else {
-                // you are good to go!
-                // start thread for sending BT data
-                fieldDataExecutor = new ScheduledThreadPoolExecutor(8);
-
-                //call run() on SendMessageRunnable every 10ms
-                fieldDataExecutor.scheduleAtFixedRate(
-                        new SendMessageRunnable(BTProtocol.Type.FIELD, (byte) 0),
-                        0l,
-                        100,
-                        TimeUnit.MILLISECONDS);
-
-            }
+        }
+        else {
+            Toast.makeText(Main.this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        switch(requestCode){
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
             case BTProtocol.REQUEST_ENABLE_BT:
                 //the user has returned from the enable BT dialog
-                if (resultCode == Activity.RESULT_OK){
+                if (resultCode == Activity.RESULT_OK) {
                     // yay bluetooth should be enabled!
                     // but it might not be paired...
-                }
-                else {
+                } else {
                     //god damn it...
-                    Toast.makeText(Main.this, "You really need bluetooth enabled...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Main.this, "You really need bluetooth enabled...", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
     }
 }
+
