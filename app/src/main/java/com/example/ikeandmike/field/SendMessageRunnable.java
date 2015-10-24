@@ -13,11 +13,13 @@ public class SendMessageRunnable implements  Runnable{
     BTProtocol.Type type;
     byte data[];
     private OutputStream os;
+    byte[] packet;
 
     public SendMessageRunnable(OutputStream os, BTProtocol.Type type, byte[] data){
         this.os = os;
         this.type = type;
         this.data = data;
+        packet = new byte[type.length()+1];
     }
 
     public SendMessageRunnable(OutputStream os, BTProtocol.Type type, byte data){
@@ -25,29 +27,29 @@ public class SendMessageRunnable implements  Runnable{
         this.type = type;
         this.data = new byte[1];
         this.data[0] = data;
+        packet = new byte[type.length()+1];
     }
 
     @Override
     public void run(){
-        byte[] allData = new byte[type.length()+1];
 
         //construct packet based on BT spec
-        allData[0] = 0x5F;
-        allData[1] = type.length();
-        allData[2] = type.id();
-        allData[3] = (byte)0x0;
-        allData[4] = (byte)BTProtocol.TeamNumber;
+        packet[0] = 0x5F;
+        packet[1] = type.length();
+        packet[2] = type.id();
+        packet[3] = (byte)0x0;
+        packet[4] = (byte)BTProtocol.TeamNumber;
 
         //send the actual data
         int i = 5;
         for (;i<5+this.data.length; i++) {
-            allData[i] = this.data[i-5];
+            packet[i] = this.data[i-5];
         }
 
-        allData[i] = calcChecksum();
+        packet[i] = calcChecksum();
 
         try {
-            os.write(allData);
+            os.write(packet);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,9 +58,11 @@ public class SendMessageRunnable implements  Runnable{
     private byte calcChecksum(){
         // 0xff minus the 8 bit sum of bytes from
         // offset 1 up to but no including this byte
-//        byte b = ;
-//        for (byte b : )
-        
-        return (byte)0;
+        byte sum = 0;
+        for (byte b : packet){
+            sum += b;
+        }
+
+        return (byte)(0xff - sum);
     }
 }

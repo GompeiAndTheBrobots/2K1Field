@@ -28,11 +28,17 @@ public class BTCommunicator implements BluetoothCallback {
     private InputStream is;
     private OutputStream os;
 
-    BTCommunicator() {
+    private static BTCommunicator instance;
 
-        //check if you don't have bluetooth enabled
+    public static BTCommunicator getInstance(){
+        if (instance == null){
+            instance = new BTCommunicator();
+        }
+        return instance;
+    }
+
+    private BTCommunicator() {
         bTAdapter = BluetoothAdapter.getDefaultAdapter();
-
     }
 
     public boolean exists() {

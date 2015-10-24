@@ -17,15 +17,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class Main extends AppCompatActivity implements BluetoothCallback{
 
     private ScheduledThreadPoolExecutor fieldDataExecutor;
-    private BTCommunicator comms;
     private FieldUSBCommunicator fieldComms;
+    private BTCommunicator comms = BTCommunicator.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        comms = new BTCommunicator();
         setupBluetooth();
     }
 
