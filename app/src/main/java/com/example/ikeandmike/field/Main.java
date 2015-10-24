@@ -99,30 +99,39 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     }
 
     public void updateState(View view) {
+        byte mask = 0;
         switch(view.getId()) {
             case R.id.Storage1:
                 Log.e("Success:", "Storage 1 Pressed");
+                mask = 1 << 4;
                 break;
             case R.id.Storage2:
                 Log.e("Success:", "Storage 2 Pressed");
+                mask = 1 << 5;
                 break;
             case R.id.Storage3:
                 Log.e("Success:", "Storage 3 Pressed");
+                mask = 1 << 6;
                 break;
             case R.id.Storage4:
                 Log.e("Success:", "Storage 4 Pressed");
+                mask = (byte) (1 << 7);
                 break;
             case R.id.Supply1:
                 Log.e("Success:", "Supply 1 Pressed");
+                mask = 1;
                 break;
             case R.id.Supply2:
                 Log.e("Success:", "Supply 2 Pressed");
+                mask = 1 << 1;
                 break;
             case R.id.Supply3:
                 Log.e("Success:", "Supply 3 Pressed");
+                mask = 1 << 2;
                 break;
             case R.id.Supply4:
                 Log.e("Success:", "Supply 4 Pressed");
+                mask = 1 << 3;
                 break;
 
             case R.id.toggleField:
@@ -136,6 +145,16 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
                 break;
             default:
                 break;
+        }
+        if (mask != 0) {
+            Log.d("Mask:", Integer.toBinaryString(mask));
+            FieldState state = FieldState.getInstance();
+            byte field = state.getStorageSupplyByte();
+            Log.d("Field Before:", Integer.toBinaryString(field));
+            byte newField = (byte) (field ^ mask);
+            state.setStorageSupplyByte(newField);
+            field = state.getStorageSupplyByte();
+            Log.d("Field After:", Integer.toBinaryString(field));
         }
     }
 }
