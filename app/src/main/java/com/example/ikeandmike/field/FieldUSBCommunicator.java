@@ -32,6 +32,8 @@ public class FieldUSBCommunicator {
     private SerialInputOutputManager mSerialIoManager;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
 
+    private FieldState fieldState;
+
     private String TAG = this.getClass().getName();
 
     /** Constructor
@@ -39,6 +41,7 @@ public class FieldUSBCommunicator {
      */
     public FieldUSBCommunicator(Context context) {
         appContext = context;
+        fieldState = FieldState.getInstance();
     }
 
     /**
@@ -95,6 +98,7 @@ public class FieldUSBCommunicator {
 
     /**
      * Closes the connection to the field device
+     * #TODO There seems to be some weird errors when no phone is connected and this method is called
      */
     private void closePort() {
         Log.d(TAG, "Closing port");
@@ -144,9 +148,10 @@ public class FieldUSBCommunicator {
                 @Override
                 public void onNewData(final byte[] data) {
                     //Do something when new data is received
-                    final String message = "Read " + data.length + " bytes: \n"
+                    final String message = "Read " + data.length + " bytes: "
                             + HexDump.dumpHexString(data) + "\n\n";
                     Log.d(TAG, message);
+                    fieldState.setStorageSupplyByte(data[0]);
                 }
             };
 
