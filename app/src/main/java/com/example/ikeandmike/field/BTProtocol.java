@@ -1,3 +1,5 @@
+package com.example.ikeandmike.field;
+
 /** @brief This class abstracts out the protocols for bluetooth
  * It is used by both and USB connection to the field computer
  */
@@ -6,7 +8,7 @@ class BTProtocol {
 
   public static int TeamNumber = -1;
 
-  public static enum Type{
+  public enum Type{
     STORAGE,
     SUPPLY,
     STOP,
@@ -14,7 +16,7 @@ class BTProtocol {
     ALERT,
     STATUS,
     HEARTBEAT
-  };
+  }
 
   public Type messageType;
 
