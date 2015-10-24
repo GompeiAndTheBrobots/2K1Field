@@ -99,7 +99,7 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     }
 
     public void updateState(View view) {
-        byte mask = 0;
+        Byte mask = 0;
         switch(view.getId()) {
             case R.id.Storage1:
                 Log.e("Success:", "Storage 1 Pressed");
@@ -115,7 +115,7 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
                 break;
             case R.id.Storage4:
                 Log.e("Success:", "Storage 4 Pressed");
-                mask = (byte) (1 << 7);
+                mask = (byte) -128;
                 break;
             case R.id.Supply1:
                 Log.e("Success:", "Supply 1 Pressed");
@@ -149,9 +149,9 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
         if (mask != 0) {
             Log.d("Mask:", Integer.toBinaryString(mask));
             FieldState state = FieldState.getInstance();
-            byte field = state.getStorageSupplyByte();
+            Byte field = state.getStorageSupplyByte();
             Log.d("Field Before:", Integer.toBinaryString(field));
-            byte newField = (byte) (field ^ mask);
+            Byte newField = (byte)(field ^ mask);
             state.setStorageSupplyByte(newField);
             field = state.getStorageSupplyByte();
             Log.d("Field After:", Integer.toBinaryString(field));
