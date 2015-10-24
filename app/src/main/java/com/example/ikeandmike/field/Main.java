@@ -8,12 +8,13 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class Main extends AppCompatActivity {
+public class Main extends AppCompatActivity implements BluetoothCallback{
 
     ScheduledThreadPoolExecutor fieldDataExecutor;
     BTCommunicator comms;
@@ -24,23 +25,28 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen);
 
         comms = new BTCommunicator(this);
+        setupBluetooth();
+    }
+
+    private void setupBluetooth(){
         if (comms.exists()) {
             if (comms.enabled()){
                 if (comms.detected()){
                     // this is asynchronous, and it should respond somehow...
                     comms.connect();
+                    comms.addConnectorListener(this);
                 }
                 else {
-                    Toast.makeText(Main.this, "No robot found!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "No robot found!", Toast.LENGTH_LONG).show();
                 }
             }
             else {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, BTProtocol.REQUEST_ENABLE_BT);
+                this.startActivityForResult(enableBtIntent, BTProtocol.REQUEST_ENABLE_BT);
             }
         }
         else {
-            Toast.makeText(Main.this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -58,6 +64,17 @@ public class Main extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    @Override
+    public void successfulConnect() {
+        Toast.makeText(Main.this, "bluetooth connected", Toast.LENGTH_SHORT).show();
+        comms.asyncSendFieldData();
+    }
+
+    @Override
+    public void failedConnect() {
+        Toast.makeText(Main.this, "bluetooth not connected", Toast.LENGTH_SHORT).show();
     }
 }
 
