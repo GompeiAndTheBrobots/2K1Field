@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
@@ -15,8 +16,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  */
 public class Main extends AppCompatActivity implements BluetoothCallback{
 
-    ScheduledThreadPoolExecutor fieldDataExecutor;
-    BTCommunicator comms;
+    private ScheduledThreadPoolExecutor fieldDataExecutor;
+    private BTCommunicator comms;
+    private FieldUSBCommunicator fieldComms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
         else {
             Toast.makeText(this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
         }
+
+        fieldComms = new FieldUSBCommunicator(this);
     }
 
     @Override
@@ -66,6 +70,17 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        fieldComms.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        fieldComms.onPause();
+    }
+
     public void successfulConnect() {
         Toast.makeText(Main.this, "bluetooth connected", Toast.LENGTH_SHORT).show();
         comms.asyncSendFieldData();
