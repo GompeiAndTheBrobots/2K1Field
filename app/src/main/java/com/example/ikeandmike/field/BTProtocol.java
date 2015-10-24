@@ -42,4 +42,34 @@ class BTProtocol {
   }
 
   public static final int REQUEST_ENABLE_BT  = 1;
+
+  private static byte calcChecksum(byte[] packet){
+    // 0xff minus the 8 bit sum of bytes from
+    // offset 1 up to but no including this byte
+    byte sum = 0;
+    for (byte b : packet){
+      sum += b;
+    }
+
+    return (byte)(0xff - sum);
+  }
+
+  public static byte[] createPacket(BTProtocol.Type type, byte[] data){
+    //construct packet based on BT spec
+    byte packet[] = new byte[type.length() + 1];
+    packet[0] = 0x5F;
+    packet[1] = type.length();
+    packet[2] = type.id();
+    packet[3] = 0x0;
+    packet[4] = (byte) BTProtocol.TeamNumber;
+
+    //send the actual data
+    int i = 5;
+    for (; i < 5 + data.length; i++) {
+      packet[i] = data[i - 5];
+    }
+
+    packet[i] = calcChecksum(packet);
+    return packet;
+  }
 }
