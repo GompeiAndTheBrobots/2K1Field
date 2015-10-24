@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -24,7 +23,7 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        comms = new BTCommunicator(this);
+        comms = new BTCommunicator();
         setupBluetooth();
     }
 
@@ -75,6 +74,12 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     @Override
     public void failedConnect() {
         Toast.makeText(Main.this, "bluetooth not connected", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        comms.close();
     }
 }
 

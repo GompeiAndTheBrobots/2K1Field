@@ -21,14 +21,14 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
 
     public BTConnector(BluetoothDevice device){
        this.device = device;
-        callers = new ArrayList<BluetoothCallback>();
+        callers = new ArrayList<>();
     }
 
     public void addListener(BluetoothCallback listener){
         callers.add(listener);
     }
 
-    public void closeSocket(){
+    public void close(){
         try {
             socket.close();
             is.close();
@@ -38,7 +38,7 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
 
     public Boolean doInBackground(Void... inputs) {
         try {
-            socket =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket",
+            socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket",
                     new Class[] {int.class}).invoke(device,1);
             socket.connect();
             is = socket.getInputStream();

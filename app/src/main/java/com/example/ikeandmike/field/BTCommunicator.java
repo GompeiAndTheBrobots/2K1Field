@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 public class BTCommunicator implements BluetoothCallback {
 
     private BluetoothDevice robot;
-    private int teamNumber;
     private BluetoothAdapter bTAdapter;
     private ScheduledThreadPoolExecutor fieldDataExecutor;
     private BTConnector connector;
@@ -68,7 +67,7 @@ public class BTCommunicator implements BluetoothCallback {
             if (matcher.find()) {
                 try {
                     robot = device;
-                    teamNumber = Integer.parseInt(matcher.group(1));
+                    BTProtocol.TeamNumber = Integer.parseInt(matcher.group(1));
                     return true;
                 } catch (NumberFormatException e) {
                     // no way will this actually happen...right?
@@ -93,12 +92,16 @@ public class BTCommunicator implements BluetoothCallback {
         connector.execute();
     }
 
+    public void close(){
+        connector.close();
+    }
+
     public void asyncSendStopMessage(){
-        fieldDataExecutor.execute(new SendMessageRunnable(BTProtocol.Type.STOP, (byte)0));
+        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.STOP, (byte)0));
     }
 
     public void asyncSendResumeMessage(){
-        fieldDataExecutor.execute(new SendMessageRunnable(BTProtocol.Type.RESUME, (byte)0));
+        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.RESUME, (byte)0));
     }
 
     public void asyncSendFieldData() {
@@ -107,7 +110,7 @@ public class BTCommunicator implements BluetoothCallback {
 
         //call run() on SendMessageRunnable every 10ms
         fieldDataExecutor.scheduleAtFixedRate(
-                new SendMessageRunnable(BTProtocol.Type.FIELD, (byte) 0),
+                new SendMessageRunnable(os, BTProtocol.Type.FIELD, (byte) 0),
                 0l,
                 100,
                 TimeUnit.MILLISECONDS);
