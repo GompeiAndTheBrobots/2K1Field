@@ -5,7 +5,7 @@ package com.example.ikeandmike.field;
  */
 public class FieldState {
     private static FieldState instance = null;
-    private byte storageSupplyByte;
+    private Byte storageSupplyByte;
 
     protected FieldState() {
         storageSupplyByte = 0;
@@ -26,7 +26,7 @@ public class FieldState {
      * Returns the bitfield of the storage and supply availability
      * @return the 8-bit bitfield for each field sensor
      */
-    public byte getStorageSupplyByte() {
+    public Byte getStorageSupplyByte() {
         synchronized (this) {
             return storageSupplyByte;
         }
@@ -36,7 +36,7 @@ public class FieldState {
      * Sets the bitfield of the storage and supply availability
      * @param data 8-bit bitfield of the storage/supply availability
      */
-    public void setStorageSupplyByte(byte data) {
+    public void setStorageSupplyByte(Byte data) {
         synchronized (this) {
             storageSupplyByte = data;
         }
