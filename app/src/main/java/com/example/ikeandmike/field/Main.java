@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class Main extends AppCompatActivity {
+public class Main extends AppCompatActivity implements BluetoothCallback{
 
     private ScheduledThreadPoolExecutor fieldDataExecutor;
     private BTCommunicator comms;
@@ -25,24 +25,29 @@ public class Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        comms = new BTCommunicator(this);
+        comms = new BTCommunicator();
+        setupBluetooth();
+    }
+
+    private void setupBluetooth(){
         if (comms.exists()) {
             if (comms.enabled()){
                 if (comms.detected()){
                     // this is asynchronous, and it should respond somehow...
                     comms.connect();
+                    comms.addConnectorListener(this);
                 }
                 else {
-                    Toast.makeText(Main.this, "No robot found!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "No robot found!", Toast.LENGTH_LONG).show();
                 }
             }
             else {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, BTProtocol.REQUEST_ENABLE_BT);
+                this.startActivityForResult(enableBtIntent, BTProtocol.REQUEST_ENABLE_BT);
             }
         }
         else {
-            Toast.makeText(Main.this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
         }
 
         fieldComms = new FieldUSBCommunicator(this);
@@ -74,6 +79,22 @@ public class Main extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         fieldComms.onPause();
+    }
+
+    public void successfulConnect() {
+        Toast.makeText(Main.this, "bluetooth connected", Toast.LENGTH_SHORT).show();
+        comms.asyncSendFieldData();
+    }
+
+    @Override
+    public void failedConnect() {
+        Toast.makeText(Main.this, "bluetooth not connected", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        comms.close();
     }
 }
 
