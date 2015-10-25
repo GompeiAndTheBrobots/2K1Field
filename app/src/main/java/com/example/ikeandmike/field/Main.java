@@ -50,19 +50,19 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                 findViewById(R.id.Supply3).setEnabled(isChecked);
                 findViewById(R.id.Supply4).setEnabled(isChecked);
 
-                if(!isChecked) { //Manual mode enabled
+                if (!isChecked) { //Manual mode enabled
                     //All buttons set off
-                    ((ToggleButton)findViewById(R.id.Storage1)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Storage2)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Storage3)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Storage4)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Supply1)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Supply2)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Supply3)).setChecked(false);
-                    ((ToggleButton)findViewById(R.id.Supply4)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Storage1)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Storage2)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Storage3)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Storage4)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Supply1)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Supply2)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Supply3)).setChecked(false);
+                    ((ToggleButton) findViewById(R.id.Supply4)).setChecked(false);
                     //Field set to 0
                     FieldState state = FieldState.getInstance();
-                    state.setStorageSupplyByte((byte)0);
+                    state.setStorageSupplyByte((byte) 0);
                 }
             }
         });
@@ -134,7 +134,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        comms.stopListeneing();
+        comms.stopListening();
         comms.close();
     }
 

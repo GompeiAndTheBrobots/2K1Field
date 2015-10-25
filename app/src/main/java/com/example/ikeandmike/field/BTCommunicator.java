@@ -132,7 +132,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         readDataTask.execute();
     }
 
-    public void stopListeneing(){
+    public void stopListening(){
         readDataTask.cancel(true);
     }
 
