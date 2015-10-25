@@ -112,11 +112,12 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     public void close() {
         connected = false;
         listeners.clear();
-        connector.close();
         try {
+            connector.close();
             is.close();
             os.close();
         } catch (IOException e) {
+        } catch (Exception e) {
         }
     }
 
@@ -147,7 +148,9 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     }
 
     public void stopListening(){
-        readDataTask.cancel(true);
+        if(readDataTask != null) {
+            readDataTask.cancel(true);
+        }
     }
 
     public void asyncSendPacket(BTProtocol.Type msgType, byte fromID, byte toID, byte[] data) {
