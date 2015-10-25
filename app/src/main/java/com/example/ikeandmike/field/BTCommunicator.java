@@ -99,11 +99,11 @@ public class BTCommunicator implements BluetoothCallback {
     }
 
     public void asyncSendStopMessage() {
-        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.STOP, (byte) 0));
+        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.STOP, (byte) 0, (byte) BTProtocol.TeamNumber, (byte) 0));
     }
 
     public void asyncSendResumeMessage() {
-        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.RESUME, (byte) 0));
+        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.RESUME, (byte) 0, (byte) BTProtocol.TeamNumber, (byte) 0));
     }
 
     public void asyncSendFieldData() {
@@ -116,6 +116,10 @@ public class BTCommunicator implements BluetoothCallback {
                 0l,
                 100,
                 TimeUnit.MILLISECONDS);
+    }
+
+    public void asyncSendPacket(BTProtocol.Type msgType, byte fromID, byte toID, byte[] data) {
+        fieldDataExecutor.execute(new SendMessageRunnable(os, msgType, fromID, toID, data));
     }
 
     @Override
