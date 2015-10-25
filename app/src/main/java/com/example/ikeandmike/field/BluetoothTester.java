@@ -34,13 +34,12 @@ public class BluetoothTester extends AppCompatActivity {
                         Main.class,
                         SimpleGestureListener.LEFT));
 
+        packetTypeInput = (Spinner) findViewById(R.id.packetType);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.packet_types_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
-
-        packetTypeInput = (Spinner) findViewById(R.id.packetType);
         packetTypeInput.setAdapter(adapter);
 
         mDetector = new GestureDetectorCompat(this,
@@ -59,9 +58,8 @@ public class BluetoothTester extends AppCompatActivity {
         String fromIdInputString = fromIdInput.getText().toString();
         String toIdInputString = toIdInput.getText().toString();
         String dataInputString = dataInput.getText().toString();
-        Toast.makeText(this, fromIdInputString + "\n"
-                            + toIdInputString + "\n"
-                            + dataInputString, Toast.LENGTH_SHORT).show();
+        String packetTypeInputString = (String) packetTypeInput.getSelectedItem();
+        Toast.makeText(this, packetTypeInputString, Toast.LENGTH_SHORT).show();
         byte fromId;
         byte toId;
 
@@ -128,9 +126,27 @@ public class BluetoothTester extends AppCompatActivity {
         Toast.makeText(this, "Byte Data: " + bytedata, Toast.LENGTH_SHORT).show();
         */
 
+        //Get the packet type
+        //#TODO ew
+        BTProtocol.Type packetType;
+        if(packetTypeInputString.equals("ALERT")) {
+            packetType = BTProtocol.Type.ALERT;
+        } else if(packetTypeInputString.equals("STOP")) {
+            packetType = BTProtocol.Type.STOP;
+        } else if(packetTypeInputString.equals("RESUME")) {
+            packetType = BTProtocol.Type.RESUME;
+        } else if(packetTypeInputString.equals("STATUS")) {
+            packetType = BTProtocol.Type.STATUS;
+        } else if(packetTypeInputString.equals("HEARTBEAT")) {
+            packetType = BTProtocol.Type.HEARTBEAT;
+        } else if(packetTypeInputString.equals("OTHER")) {
+            packetType = BTProtocol.Type.OTHER;
+        } else {
+            packetType = BTProtocol.Type.OTHER;
+        }
+        
         //Send the data!!!
-        //#TODO dynamically set the type
-        BTCommunicator.getInstance().asyncSendPacket(BTProtocol.Type.OTHER, fromId, toId, bytes);
+        BTCommunicator.getInstance().asyncSendPacket(packetType, fromId, toId, bytes);
     }
 
 }
