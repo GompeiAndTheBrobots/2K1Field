@@ -7,9 +7,6 @@ import android.graphics.Color;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -21,8 +18,6 @@ import android.widget.RadioButton;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -102,9 +97,11 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             if (comms.enabled()) {
                 if (comms.detected()) {
                     // this is asynchronous, and it should respond somehow...
-                    comms.connect();
-                    comms.addConnectorListener(this);
-                    comms.addOnMessageListener(this);
+                    if (!comms.isConnected()) {
+                        comms.connect();
+                        comms.addConnectorListener(this);
+                        comms.addOnMessageListener(this);
+                    }
                 } else {
                     Toast.makeText(this, "No robot found!", Toast.LENGTH_LONG).show();
                 }

@@ -1,5 +1,7 @@
 package com.example.ikeandmike.field;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -25,6 +27,11 @@ public class SendMessageRunnable implements Runnable {
     @Override
     public void run(){
         try {
+            String str = "";
+            for (byte b : packet){
+                str += Byte.toString(b) +" ";
+            }
+            Log.e(getClass().toString(), str);
             os.write(packet);
         } catch (IOException e) {
             e.printStackTrace();

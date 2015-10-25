@@ -27,6 +27,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     private OutputStream os;
     private ReadRobotDataTask readDataTask;
     private List<BluetoothMessageCallback> listeners;
+    private boolean connected;
 
     private static BTCommunicator instance;
 
@@ -92,6 +93,10 @@ public class BTCommunicator implements BluetoothConnectionCallback {
 
     }
 
+    public boolean isConnected(){
+        return connected;
+    }
+
     public void addConnectorListener(BluetoothConnectionCallback listener) {
         connector.addListener(listener);
     }
@@ -151,6 +156,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         os = connector.os;
         asyncSendFieldData();
         asyncReadRobotData();
+        connected = true;
     }
 
     @Override
