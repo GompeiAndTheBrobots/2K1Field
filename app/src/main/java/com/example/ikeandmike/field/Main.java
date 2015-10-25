@@ -176,9 +176,11 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
             case R.id.Resume:
                 Log.e("Success:", "Resume Button Pressed");
+                comms.asyncSendResumeMessage();
                 break;
             case R.id.Stop:
                 Log.e("Success", "Stop Button Pressed");
+                comms.asyncSendStopMessage();
                 break;
             default:
                 break;
