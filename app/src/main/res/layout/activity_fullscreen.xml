@@ -50,7 +50,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/heartBeat"/>
+                android:id="@+id/heartbeatIndicator"/>
 
         </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -32,6 +33,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     public static BTCommunicator getInstance() {
         if (instance == null) {
             instance = new BTCommunicator();
+            instance.listeners = new ArrayList<>();
         }
         return instance;
     }

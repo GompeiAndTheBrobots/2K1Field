@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -20,11 +21,15 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private ScheduledThreadPoolExecutor fieldDataExecutor;
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
+    private RadioButton heartbeatIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
+
+        heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
+
         setupBluetooth();
     }
 
@@ -160,7 +165,9 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
     @Override
     public void validMessage(BTProtocol.Type type, byte[] data) {
-        Toast.makeText(this,"Received message of type " + type.toString(), Toast.LENGTH_LONG);
+        if (type == BTProtocol.Type.HEARTBEAT){
+            heartbeatIndicator.setChecked(!heartbeatIndicator.isChecked());
+        }
     }
 
     @Override
@@ -168,4 +175,3 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         Toast.makeText(Main.this, "Invalid message we received!", Toast.LENGTH_SHORT).show();
     }
 }
-
