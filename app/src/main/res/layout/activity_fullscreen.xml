@@ -8,19 +8,19 @@
               tools:context=".FullscreenActivity">
 
     <LinearLayout
-        android:layout_weight="0.15"
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/header"
+        android:layout_weight="0.15"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/Resume"
+            android:id="@+id/resume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="updateState"
+
             android:text="Resume"/>
 
         <ToggleButton
@@ -33,10 +33,10 @@
             android:textOn="Field"/>
 
         <Button
-            android:id="@+id/Stop"
+            android:id="@+id/stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="updateState"
+
             android:text="STOP"/>
 
         <RadioButton
@@ -47,9 +47,9 @@
     </LinearLayout>
 
     <GridLayout
+        android:id="@+id/buttons"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/buttons"
         android:layout_weight="0.45"
         android:columnCount="4"
         android:rowCount="2"
@@ -61,7 +61,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Supply 4"
             android:textOff="4: Empty"
             android:textOn="4: Full"/>
@@ -72,7 +71,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Supply 3"
             android:textOff="3: Empty"
             android:textOn="3: Full"/>
@@ -83,7 +81,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Supply 2"
             android:textOff="2: Empty"
             android:textOn="2: Full"/>
@@ -94,7 +91,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Supply 1"
             android:textOff="1: Empty"
             android:textOn="1: Full"/>
@@ -105,7 +101,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Storage 4"
             android:textOff="4: Empty"
             android:textOn="4: Full"/>
@@ -116,7 +111,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Storage 3"
             android:textOff="3: Empty"
             android:textOn="3: Full"/>
@@ -127,7 +121,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Storage 2"
             android:textOff="2: Empty"
             android:textOn="2: Full"/>
@@ -138,7 +131,6 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:enabled="false"
-            android:onClick="updateState"
             android:text="Storage 1"
             android:textOff="1: Empty"
             android:textOn="1: Full"/>
@@ -147,27 +139,27 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:gravity="center_vertical"
         android:layout_height="0dp"
+        android:layout_weight="0.45"
+        android:gravity="center_vertical"
         android:orientation="vertical"
-        android:weightSum="1"
-        android:layout_weight="0.45">
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/textView2"
-            android:padding="20dp"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.5"
             android:layout_column="0"
+            android:layout_weight="0.5"
+            android:padding="20dp"
             android:text="Status information"/>
 
         <TextView
             android:id="@+id/textView"
-            android:padding="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
+            android:padding="20dp"
             android:text="Debug Information"/>
     </LinearLayout>
 
