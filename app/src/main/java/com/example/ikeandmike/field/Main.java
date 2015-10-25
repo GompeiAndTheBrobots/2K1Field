@@ -7,7 +7,11 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -29,6 +33,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private FieldStateInterface fieldStateInterface;
 
     private RadioButton heartbeatIndicator;
+    private ImageView radiationIndicator;
+    private Animation animation;
     private Button stopButton, resumeButton;
     private ToggleButton toggleField;
 
@@ -47,6 +53,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
+        radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
 
         stopButton.setOnClickListener(this);
         resumeButton.setOnClickListener(this);
