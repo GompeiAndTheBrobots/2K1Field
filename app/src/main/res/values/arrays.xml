@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="packet_types_array">
+        <item>ALERT</item>
+        <item>STOP</item>
+        <item>RESUME</item>
+        <item>STATUS</item>
+        <item>HEARTBEAT</item>
+        <item>OTHER</item>
+    </string-array>
+</resources>
