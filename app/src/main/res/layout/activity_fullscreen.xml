@@ -47,7 +47,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/imageView"
+            android:id="@+id/radiationIndicator"
             android:background="@color/green"
             />
 

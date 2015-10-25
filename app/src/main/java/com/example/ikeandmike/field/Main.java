@@ -7,7 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -31,6 +35,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private RadioButton heartbeatIndicator;
     private Button stopButton, resumeButton;
     private ToggleButton toggleField;
+    private ImageView radiationIndicator;
+    private Animation animation;
 
     public static int[] buttonIds = new int[] {
         R.id.Supply1, R.id.Supply2, R.id.Supply3, R.id.Supply4,
@@ -47,6 +53,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
+        this.toggleField = (ToggleButton) findViewById(R.id.toggleField);
+        this.radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
 
         stopButton.setOnClickListener(this);
         resumeButton.setOnClickListener(this);
@@ -55,7 +63,10 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             ((Button) findViewById(id)).setOnClickListener(fieldStateInterface);
         }
 
-        this.toggleField = (ToggleButton) findViewById(R.id.toggleField);
+        animation = new AlphaAnimation(1, 0);
+        animation.setDuration(500);
+        animation.setInterpolator(new LinearInterpolator());
+
         this.toggleField.setOnCheckedChangeListener(this);
         setupBluetooth();
     }
@@ -124,6 +135,19 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     public void validMessage(BTProtocol.Type type, byte[] data) {
         if (type == BTProtocol.Type.HEARTBEAT) {
             heartbeatIndicator.setChecked(!heartbeatIndicator.isChecked());
+        }
+        else if (type == BTProtocol.Type.ALERT)  {
+            if (data[0] == 0x2C) {
+                //Low Radiation -- Yellow
+                radiationIndicator.setBackgroundResource(R.color.yellow);
+            }
+            else if (data[0] == 0xFF) {
+                //High Radiation -- Red
+                radiationIndicator.setBackgroundResource(R.color.red);
+            }
+            //Run animation
+            radiationIndicator.startAnimation(animation);
+            radiationIndicator.setBackgroundResource(R.color.green);
         }
     }
 
