@@ -25,10 +25,10 @@ public class SendFieldRunnable implements  Runnable{
         storageData[0] = (byte)(data & 0x0F);
         supplyData[0] = (byte)(data & 0xF0);
 
-        byte[] storagePacket = BTProtocol.createPacket(BTProtocol.Type.FIELD,
-                storageData);
-        byte[] supplPacket = BTProtocol.createPacket(BTProtocol.Type.FIELD,
-                storageData);
+        byte[] storagePacket = BTProtocol.createPacket(BTProtocol.Type.FIELD, (byte) 0,
+                (byte) BTProtocol.TeamNumber, storageData);
+        byte[] supplPacket = BTProtocol.createPacket(BTProtocol.Type.FIELD, (byte) 0,
+                (byte) BTProtocol.TeamNumber, storageData);
 
         try {
             os.write(supplPacket);
