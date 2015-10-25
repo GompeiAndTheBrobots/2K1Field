@@ -54,14 +54,14 @@ class BTProtocol {
     return (byte)(0xff - sum);
   }
 
-  public static byte[] createPacket(BTProtocol.Type type, byte[] data){
+  public static byte[] createPacket(BTProtocol.Type type, byte fromID, byte toID, byte[] data){
     //construct packet based on BT spec
-    byte packet[] = new byte[type.length() + 1];
+    byte packet[] = new byte[data.length + 6];
     packet[0] = 0x5F;
     packet[1] = type.length();
     packet[2] = type.id();
-    packet[3] = 0x0;
-    packet[4] = (byte) BTProtocol.TeamNumber;
+    packet[3] = fromID;
+    packet[4] = toID;
 
     //send the actual data
     int i = 5;
