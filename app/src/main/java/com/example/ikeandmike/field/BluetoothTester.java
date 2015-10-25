@@ -19,6 +19,7 @@ public class BluetoothTester extends AppCompatActivity {
     private EditText dataInput;
     private GestureDetectorCompat mDetector;
     private Spinner packetTypeInput;
+    private GestureDetectorCompat mDetector;
 
     private BTCommunicator btCommunicator;
 
@@ -47,6 +48,17 @@ public class BluetoothTester extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         packetTypeInput.setAdapter(adapter);
+
+        mDetector = new GestureDetectorCompat(this,
+                new SimpleGestureListener(this,
+                        Main.class,
+                        SimpleGestureListener.LEFT));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 
     public void sendPacket(View view) {
