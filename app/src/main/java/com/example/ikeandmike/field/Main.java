@@ -42,7 +42,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private GestureDetectorCompat mDetector;
     private ImageView radiationIndicator;
     private Animation animation;
-    private Button stopButton, resumeButton;
+    private Button stopButton, resumeButton, resetButton;
     private ToggleButton toggleField;
 
     public static int[] buttonIds = new int[] {
@@ -63,6 +63,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
         radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
+        toggleField = (ToggleButton) findViewById(R.id.toggleField);
+        resetButton = (Button) findViewById(R.id.resetButton);
 
         mDetector = new GestureDetectorCompat(this,
                 new SimpleGestureListener(this,
@@ -71,12 +73,14 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
         stopButton.setOnClickListener(this);
         resumeButton.setOnClickListener(this);
+        toggleField.setOnCheckedChangeListener(this);
+        resetButton.setOnClickListener(this);
 
         for (int id : buttonIds) {
             ((Button) findViewById(id)).setOnClickListener(fieldStateInterface);
         }
 
-        this.toggleField = (ToggleButton) findViewById(R.id.toggleField);
+
         animation = new AlphaAnimation(1, 0);
         animation.setDuration(50);
         animation.setInterpolator(new LinearInterpolator());
@@ -84,7 +88,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         animation.setRepeatCount(1);
         animation.setAnimationListener(this);
 
-        this.toggleField.setOnCheckedChangeListener(this);
         setupBluetooth();
     }
 
@@ -187,6 +190,9 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             comms.asyncSendResumeMessage();
         } else if (v.getId() == R.id.stop) {
             comms.asyncSendStopMessage();
+        }
+        else if (v.getId() == R.id.resetButton) {
+            setupBluetooth();
         }
     }
 
