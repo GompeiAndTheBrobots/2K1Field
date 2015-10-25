@@ -55,8 +55,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        Toast.makeText(Main.this, "ON CREATE", Toast.LENGTH_SHORT).show();
-
         fieldStateInterface = new FieldStateInterface();
         FieldState.getInstance().registerFieldStateChangeListener(this);
 
@@ -107,6 +105,9 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                         comms.connect();
                         comms.addConnectorListener(this);
                         comms.addOnMessageListener(this);
+                    }
+                    else {
+                        Toast.makeText(Main.this, "Already connected", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(this, "No robot found!", Toast.LENGTH_LONG).show();
@@ -195,6 +196,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             comms.asyncSendStopMessage();
         }
         else if (v.getId() == R.id.resetButton) {
+            Log.e(getClass().toString(), "resetting bluetooth");
+            comms.close();
             setupBluetooth();
         }
     }

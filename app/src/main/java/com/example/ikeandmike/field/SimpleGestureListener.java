@@ -32,7 +32,6 @@ public class SimpleGestureListener extends GestureDetector.SimpleOnGestureListen
     @Override
     public boolean onFling(MotionEvent event1, MotionEvent event2,
                            float velocityX, float velocityY) {
-        Log.e(getClass().toString(), "onFling: " + event1.toString() + event2.toString());
         if (direction == LEFT){
             if (velocityX > 500) {
                 Intent intent = new Intent(context, goTo);

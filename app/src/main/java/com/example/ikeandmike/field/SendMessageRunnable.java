@@ -13,6 +13,11 @@ public class SendMessageRunnable implements Runnable {
     private OutputStream os;
     private byte[] packet;
 
+    SendMessageRunnable(OutputStream os, BTProtocol.Type type, byte fromId, byte toId){
+        this.os = os;
+        packet = BTProtocol.createPacket(type, fromId, toId, new byte[0]);
+    }
+
     SendMessageRunnable(OutputStream os, BTProtocol.Type type, byte fromId, byte toId, byte data){
         this.os = os;
         byte[] dataArr = new byte[1];

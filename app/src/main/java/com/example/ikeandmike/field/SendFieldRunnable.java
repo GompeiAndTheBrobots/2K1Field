@@ -1,5 +1,7 @@
 package com.example.ikeandmike.field;
 
+import android.util.Log;
+
 import com.hoho.android.usbserial.driver.ProbeTable;
 
 import java.io.IOException;
@@ -25,15 +27,16 @@ public class SendFieldRunnable implements  Runnable{
         storageData[0] = (byte)(data & 0x0F);
         supplyData[0] = (byte)(data & 0xF0);
 
-        byte[] storagePacket = BTProtocol.createPacket(BTProtocol.Type.FIELD, (byte) 0,
-                (byte) BTProtocol.TeamNumber, storageData);
-        byte[] supplPacket = BTProtocol.createPacket(BTProtocol.Type.FIELD, (byte) 0,
-                (byte) BTProtocol.TeamNumber, storageData);
+        byte[] storagePacket = BTProtocol.createPacket(BTProtocol.Type.STORAGE, (byte) 0,
+                (byte) 0x0, storageData);
+        byte[] supplyPacket = BTProtocol.createPacket(BTProtocol.Type.SUPPLY, (byte) 0,
+                (byte )0x0, supplyData);
 
         try {
-            os.write(supplPacket);
+            os.write(supplyPacket);
+            Thread.sleep(500);
             os.write(storagePacket);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -29,11 +29,12 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
     }
 
     public void close(){
+        callers.clear();
         try {
             socket.close();
             is.close();
             os.close();
-        } catch (IOException e) {}
+        } catch (Exception e) {}
     }
 
     public Boolean doInBackground(Void... inputs) {

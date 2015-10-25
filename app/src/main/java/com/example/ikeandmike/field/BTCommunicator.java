@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -109,15 +110,28 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     }
 
     public void close() {
+        connected = false;
+        listeners.clear();
         connector.close();
+        try {
+            is.close();
+            os.close();
+        } catch (IOException e) {
+        }
     }
 
     public void asyncSendStopMessage() {
-        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.STOP, (byte) 0, (byte) BTProtocol.TeamNumber, (byte) 0));
+        fieldDataExecutor.execute(new SendMessageRunnable(os,
+                BTProtocol.Type.STOP,
+                (byte) 0,
+                (byte) BTProtocol.TeamNumber));
     }
 
     public void asyncSendResumeMessage() {
-        fieldDataExecutor.execute(new SendMessageRunnable(os, BTProtocol.Type.RESUME, (byte) 0, (byte) BTProtocol.TeamNumber, (byte) 0));
+        fieldDataExecutor.execute(new SendMessageRunnable(os,
+                BTProtocol.Type.RESUME,
+                (byte) 0,
+                (byte) BTProtocol.TeamNumber));
     }
 
     public void asyncSendFieldData() {
@@ -162,5 +176,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     @Override
     public void failedConnect() {
         //nothing to do here
+        Log.e(getClass().toString(), "DISCONNECTED!!!!!!!");
+        connected = false;
     }
 }

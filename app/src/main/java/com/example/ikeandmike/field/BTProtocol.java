@@ -1,5 +1,7 @@
 package com.example.ikeandmike.field;
 
+import android.util.Log;
+
 /** @brief This class abstracts out the protocols for bluetooth
  * It is used by both and USB connection to the field computer
  */
@@ -10,7 +12,8 @@ class BTProtocol {
 
   public enum Type{
     // 5 is for all the necessary stuff
-    FIELD ((byte)0x6, (byte) 0x1),
+    SUPPLY ((byte)0x6, (byte) 0x1),
+    STORAGE ((byte)0x6, (byte) 0x2),
     ALERT ((byte) 0x6, (byte) 0x3),
     STOP ((byte) 0x5, (byte) 0x4),
     RESUME ((byte) 0x5, (byte) 0x5),
@@ -46,19 +49,19 @@ class BTProtocol {
   private static byte calcChecksum(byte[] packet){
     // 0xff minus the 8 bit sum of bytes from
     // offset 1 up to but no including this byte
-    byte sum = 0;
-    for (byte b : packet){
-      sum += b;
+    int sum = 0;
+    for (int i=1; i < packet.length - 1; i++){
+      sum += packet[i];
     }
-
-    return (byte)(0xff - sum);
+    int chk = 0xFF - sum;
+    return (byte)chk;
   }
 
   public static byte[] createPacket(BTProtocol.Type type, byte fromID, byte toID, byte[] data){
     //construct packet based on BT spec
     byte packet[] = new byte[data.length + 6];
     packet[0] = 0x5F;
-    packet[1] = (byte) (type.length() + 5);
+    packet[1] = (byte) (type.length());
     packet[2] = type.id();
     packet[3] = fromID;
     packet[4] = toID;
