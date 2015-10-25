@@ -72,4 +72,10 @@ class BTProtocol {
     packet[i] = calcChecksum(packet);
     return packet;
   }
+
+  public static String[] stat1 = new String[] {"Reserved", "Stopped", "Moving (Teleoperation)", "Moving(Autonomous)"};
+  public static String[] stat2 = new String[] {"Reserved", "No rod in gripper", "Rod in gripper"};
+  public static String[] stat3 = new String[] {"Reserved", "Grip attempt in progress", "Grip release in progress",
+                                               "Driving to reactor rod", "Driving to storage area",
+                                               "Driving to supply area", "Idle (no operation in progress)"};
 }

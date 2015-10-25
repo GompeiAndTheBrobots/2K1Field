@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -44,6 +45,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
     private ToggleButton toggleField;
+    private TextView status, debug;
 
     public static int[] buttonIds = new int[] {
         R.id.Supply1, R.id.Supply2, R.id.Supply3, R.id.Supply4,
@@ -65,6 +67,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
         toggleField = (ToggleButton) findViewById(R.id.toggleField);
         resetButton = (Button) findViewById(R.id.resetButton);
+        status = (TextView) findViewById(R.id.status);
+        debug = (TextView) findViewById(R.id.debug);
 
         mDetector = new GestureDetectorCompat(this,
                 new SimpleGestureListener(this,
@@ -176,6 +180,15 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             }
             //Run animation
             radiationIndicator.startAnimation(animation);
+        }
+        else if (type == BTProtocol.Type.STATUS) {
+            String s = String.format("%s, %s, %s", BTProtocol.stat1[data[0]], BTProtocol.stat2[data[1]],
+                                                   BTProtocol.stat3[data[2]]);
+            status.setText(s);
+        }
+        else if (type == BTProtocol.Type.OTHER) {
+            String s = String.format("%s%s%s", data[0], data[1], data[2]);
+            debug.setText(s);
         }
     }
 
