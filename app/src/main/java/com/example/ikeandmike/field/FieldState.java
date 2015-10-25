@@ -58,5 +58,7 @@ public class FieldState {
         stateChangeListeners.add(object);
     }
 
+    //#TODO add functionality to deregister listeners
+
 
 }
