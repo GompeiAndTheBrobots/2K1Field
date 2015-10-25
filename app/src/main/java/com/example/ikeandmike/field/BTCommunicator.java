@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * Created by peter on 10/24/15.
  */
-public class BTCommunicator implements BluetoothCallback {
+public class BTCommunicator implements BluetoothConnectionCallback {
 
     private BluetoothDevice robot;
     private BluetoothAdapter bTAdapter;
@@ -23,6 +24,8 @@ public class BTCommunicator implements BluetoothCallback {
     private BTConnector connector;
     private InputStream is;
     private OutputStream os;
+    private ReadRobotDataTask readDataTask;
+    private List<BluetoothMessageCallback> listeners;
 
     private static BTCommunicator instance;
 
@@ -31,6 +34,10 @@ public class BTCommunicator implements BluetoothCallback {
             instance = new BTCommunicator();
         }
         return instance;
+    }
+
+    public void addOnMessageListener(BluetoothMessageCallback listener){
+        listeners.add(listener);
     }
 
     private BTCommunicator() {
@@ -83,7 +90,7 @@ public class BTCommunicator implements BluetoothCallback {
 
     }
 
-    public void addConnectorListener(BluetoothCallback listener) {
+    public void addConnectorListener(BluetoothConnectionCallback listener) {
         connector.addListener(listener);
     }
 
@@ -118,11 +125,22 @@ public class BTCommunicator implements BluetoothCallback {
                 TimeUnit.MILLISECONDS);
     }
 
+    public void asyncReadRobotData(){
+        readDataTask = new ReadRobotDataTask(is, listeners);
+        readDataTask.execute();
+    }
+
+    public void stopListeneing(){
+        readDataTask.cancel(true);
+    }
+
     @Override
     public void successfulConnect() {
         //we now have valid input and output streams
         is = connector.is;
         os = connector.os;
+        asyncSendFieldData();
+        asyncReadRobotData();
     }
 
     @Override

@@ -9,14 +9,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class Main extends AppCompatActivity implements BluetoothCallback{
+public class Main extends AppCompatActivity implements BluetoothConnectionCallback, BluetoothMessageCallback {
 
     private ScheduledThreadPoolExecutor fieldDataExecutor;
     private FieldUSBCommunicator fieldComms;
@@ -26,7 +25,6 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
-
         setupBluetooth();
     }
 
@@ -37,6 +35,7 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
                     // this is asynchronous, and it should respond somehow...
                     comms.connect();
                     comms.addConnectorListener(this);
+                    comms.addOnMessageListener(this);
                 }
                 else {
                     Toast.makeText(this, "No robot found!", Toast.LENGTH_LONG).show();
@@ -84,7 +83,7 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
 
     public void successfulConnect() {
         Toast.makeText(Main.this, "bluetooth connected", Toast.LENGTH_SHORT).show();
-        comms.asyncSendFieldData();
+
     }
 
     @Override
@@ -95,6 +94,7 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
     @Override
     protected void onDestroy(){
         super.onDestroy();
+        comms.stopListeneing();
         comms.close();
     }
 
@@ -156,6 +156,16 @@ public class Main extends AppCompatActivity implements BluetoothCallback{
             field = state.getStorageSupplyByte();
             Log.d("Field After:", Integer.toBinaryString(field));
         }
+    }
+
+    @Override
+    public void validMessage(BTProtocol.Type type, byte[] data) {
+        Toast.makeText(this,"Received message of type " + type.toString(), Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void invalidMessage() {
+        Toast.makeText(Main.this, "Invalid message we received!", Toast.LENGTH_SHORT).show();
     }
 }
 

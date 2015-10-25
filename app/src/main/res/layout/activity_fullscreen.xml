@@ -46,6 +46,12 @@
                 android:text="STOP"
                 android:id="@+id/Stop"
                 android:onClick="updateState"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/heartBeat"/>
+
         </LinearLayout>
 
         <GridLayout

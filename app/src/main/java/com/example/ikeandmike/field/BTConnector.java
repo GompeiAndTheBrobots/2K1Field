@@ -15,7 +15,7 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
 
     private BluetoothSocket socket;
     private BluetoothDevice device;
-    private List<BluetoothCallback> callers;
+    private List<BluetoothConnectionCallback> callers;
     public InputStream is;
     public OutputStream os;
 
@@ -24,7 +24,7 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
         callers = new ArrayList<>();
     }
 
-    public void addListener(BluetoothCallback listener){
+    public void addListener(BluetoothConnectionCallback listener){
         callers.add(listener);
     }
 
@@ -55,7 +55,7 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
     }
 
     public void onPostExecute(Boolean connected){
-        for (BluetoothCallback cb : callers){
+        for (BluetoothConnectionCallback cb : callers){
             if (connected){
                 cb.successfulConnect();
             }
