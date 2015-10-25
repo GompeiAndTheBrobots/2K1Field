@@ -133,6 +133,14 @@ public class BTCommunicator implements BluetoothConnectionCallback {
 
     public void asyncSendPacket(BTProtocol.Type msgType, byte fromID, byte toID, byte[] data) {
         fieldDataExecutor.execute(new SendMessageRunnable(os, msgType, fromID, toID, data));
+
+    public void asyncReadRobotData(){
+        readDataTask = new ReadRobotDataTask(is, listeners);
+        readDataTask.execute();
+    }
+
+    public void stopListeneing(){
+        readDataTask.cancel(true);
     }
 
     @Override

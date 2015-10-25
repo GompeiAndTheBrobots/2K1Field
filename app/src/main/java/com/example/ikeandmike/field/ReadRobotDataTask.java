@@ -65,6 +65,7 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
             properType = BTProtocol.Type.HEARTBEAT;
         }
         else if (type == BTProtocol.Type.ALERT.id()){
+<<<<<<< HEAD
             properType = BTProtocol.Type.ALERT;
         }
         else if (type == BTProtocol.Type.STATUS.id()) {
@@ -72,6 +73,19 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
         }
         else if (type == BTProtocol.Type.OTHER.id()){
             properType = BTProtocol.Type.OTHER;
+=======
+            Log.e(getClass().toString(), "alert");
+            properType = BTProtocol.Type.ALERT;
+        }
+        else if (type == BTProtocol.Type.STATUS.id()) {
+            Log.e(getClass().toString(), "status");
+            properType = BTProtocol.Type.STATUS;
+        }
+        else if (type == BTProtocol.Type.OTHER.id()){
+            Log.e(getClass().toString(), "other?");
+            properType = BTProtocol.Type.OTHER;
+
+>>>>>>> Reworked bluetooth callbacks
         }
         else {
             for (BluetoothMessageCallback listener : listeners) {
