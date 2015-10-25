@@ -1,14 +1,19 @@
 package com.example.ikeandmike.field;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jordanbrobots on 10/24/15.
  */
 public class FieldState {
     private static FieldState instance = null;
     private Byte storageSupplyByte;
+    private List<FieldStateChangeInterface> stateChangeListeners;
 
     protected FieldState() {
         storageSupplyByte = 0;
+        stateChangeListeners = new ArrayList<FieldStateChangeInterface>();
     }
 
     /**
@@ -40,6 +45,17 @@ public class FieldState {
         synchronized (this) {
             storageSupplyByte = data;
         }
+        for(FieldStateChangeInterface listener : stateChangeListeners) {
+            listener.onFieldStateChange(data);
+        }
+    }
+
+    /**
+     * Registers the object to listen for when the field state changes.
+     * @param object object to register a listener for
+     */
+    public void registerFieldStateChangeListener(FieldStateChangeInterface object) {
+        stateChangeListeners.add(object);
     }
 
 
