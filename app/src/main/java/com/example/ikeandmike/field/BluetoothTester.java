@@ -1,16 +1,21 @@
 package com.example.ikeandmike.field;
 
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 
 public class BluetoothTester extends AppCompatActivity {
+
     private EditText fromIdInput;
     private EditText toIdInput;
     private EditText dataInput;
+    private GestureDetectorCompat mDetector;
 
     private BTCommunicator btCommunicator;
 
@@ -21,6 +26,16 @@ public class BluetoothTester extends AppCompatActivity {
         fromIdInput = (EditText) findViewById(R.id.FromID);
         toIdInput = (EditText) findViewById(R.id.ToID);
         dataInput = (EditText) findViewById(R.id.extradata);
+        mDetector = new GestureDetectorCompat(this,
+                new SimpleGestureListener(this,
+                        Main.class,
+                        SimpleGestureListener.LEFT));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 
     public void sendPacket(View view) {
@@ -57,7 +72,7 @@ public class BluetoothTester extends AppCompatActivity {
 
         //Validate that the user data is valid
         //#TODO actually validate the string
-        
+
         if(byteStrings.length != 0 || (byteStrings.length!=1 && byteStrings[0].equals(""))) {
             //Check that every split string has some characters in it
             for (String testString : byteStrings) {

@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -26,13 +31,15 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class Main extends AppCompatActivity implements BluetoothConnectionCallback,
         BluetoothMessageCallback,
         View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener, Animation.AnimationListener {
+        CompoundButton.OnCheckedChangeListener,
+        Animation.AnimationListener {
 
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
     private FieldStateInterface fieldStateInterface;
 
     private RadioButton heartbeatIndicator;
+    private GestureDetectorCompat mDetector;
     private ImageView radiationIndicator;
     private Animation animation;
     private Button stopButton, resumeButton;
@@ -48,12 +55,19 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
+        Toast.makeText(Main.this, "ON CREATE", Toast.LENGTH_SHORT).show();
+
         fieldStateInterface = new FieldStateInterface();
 
         heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
         radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
+
+        mDetector = new GestureDetectorCompat(this,
+                new SimpleGestureListener(this,
+                        BluetoothTester.class,
+                        SimpleGestureListener.RIGHT));
 
         stopButton.setOnClickListener(this);
         resumeButton.setOnClickListener(this);
@@ -72,6 +86,12 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
         this.toggleField.setOnCheckedChangeListener(this);
         setupBluetooth();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 
     private void setupBluetooth() {
