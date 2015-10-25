@@ -19,7 +19,6 @@ public class BluetoothTester extends AppCompatActivity {
     private EditText dataInput;
     private GestureDetectorCompat mDetector;
     private Spinner packetTypeInput;
-    private GestureDetectorCompat mDetector;
 
     private BTCommunicator btCommunicator;
 
@@ -34,13 +33,6 @@ public class BluetoothTester extends AppCompatActivity {
                 new SimpleGestureListener(this,
                         Main.class,
                         SimpleGestureListener.LEFT));
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event){
-        this.mDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
-        packetTypeInput = (Spinner) findViewById(R.id.packetType);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.packet_types_array, android.R.layout.simple_spinner_item);
