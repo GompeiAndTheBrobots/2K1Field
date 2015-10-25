@@ -3,9 +3,9 @@ package com.example.ikeandmike.field;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -26,7 +26,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class Main extends AppCompatActivity implements BluetoothConnectionCallback,
         BluetoothMessageCallback,
         View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+        CompoundButton.OnCheckedChangeListener, Animation.AnimationListener {
 
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
@@ -64,8 +64,11 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         }
 
         animation = new AlphaAnimation(1, 0);
-        animation.setDuration(500);
+        animation.setDuration(50);
         animation.setInterpolator(new LinearInterpolator());
+        animation.setRepeatMode(Animation.REVERSE);
+        animation.setRepeatCount(1);
+        animation.setAnimationListener(this);
 
         this.toggleField.setOnCheckedChangeListener(this);
         setupBluetooth();
@@ -139,15 +142,17 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         else if (type == BTProtocol.Type.ALERT)  {
             if (data[0] == 0x2C) {
                 //Low Radiation -- Yellow
-                radiationIndicator.setBackgroundResource(R.color.yellow);
+                radiationIndicator.setBackgroundColor(Color.YELLOW);
             }
             else if (data[0] == 0xFF) {
                 //High Radiation -- Red
-                radiationIndicator.setBackgroundResource(R.color.red);
+                radiationIndicator.setBackgroundColor(Color.RED);
+            }
+            else {
+                radiationIndicator.setBackgroundColor(Color.BLUE);
             }
             //Run animation
             radiationIndicator.startAnimation(animation);
-            radiationIndicator.setBackgroundResource(R.color.green);
         }
     }
 
@@ -177,5 +182,19 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                 state.setStorageSupplyByte((byte) 0);
             }
         }
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        radiationIndicator.setBackgroundColor(Color.BLACK);
+        radiationIndicator.clearAnimation();
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
     }
 }
