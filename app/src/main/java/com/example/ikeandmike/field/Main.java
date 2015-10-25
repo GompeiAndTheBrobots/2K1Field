@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -27,7 +29,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         BluetoothMessageCallback,
         View.OnClickListener,
         CompoundButton.OnCheckedChangeListener,
-        Animation.AnimationListener {
+        Animation.AnimationListener,
+        FieldStateChangeInterface{
 
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
@@ -39,6 +42,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
     private ToggleButton toggleField;
+
+    private boolean useFieldData = true;
 
     public static int[] buttonIds = new int[] {
         R.id.Supply1, R.id.Supply2, R.id.Supply3, R.id.Supply4,
@@ -53,6 +58,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         Toast.makeText(Main.this, "ON CREATE", Toast.LENGTH_SHORT).show();
 
         fieldStateInterface = new FieldStateInterface();
+        FieldState.getInstance().registerFieldStateChangeListener(this);
 
         heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
         stopButton = (Button) findViewById(R.id.stop);
@@ -205,6 +211,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                 state.setStorageSupplyByte((byte) 0);
             }
         }
+        useFieldData = !isChecked;
     }
 
     @Override
@@ -219,5 +226,24 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
     @Override
     public void onAnimationRepeat(Animation animation) {
+    }
+
+    //Update the indicators for the storage and supply
+    @Override
+    public void onFieldStateChange(Byte supplyStorageByte) {
+        Handler handler = new Handler(this.getMainLooper());
+        final Byte data = supplyStorageByte;
+        //Run on UI Thread to update the toggles
+        handler.post(new Runnable() {
+            public void run() {
+                if (useFieldData) {
+                    for (int i = 0; i < buttonIds.length; i++) {
+                        byte mask = ((Integer) (1 << i)).byteValue();
+                        boolean state = ((mask & data) != 0);
+                        ((ToggleButton) findViewById(buttonIds[i])).setChecked(state);
+                    }
+                }
+            }
+        });
     }
 }
