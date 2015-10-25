@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 
@@ -16,6 +18,7 @@ public class BluetoothTester extends AppCompatActivity {
     private EditText toIdInput;
     private EditText dataInput;
     private GestureDetectorCompat mDetector;
+    private Spinner packetTypeInput;
 
     private BTCommunicator btCommunicator;
 
@@ -36,6 +39,14 @@ public class BluetoothTester extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event){
         this.mDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
+        packetTypeInput = (Spinner) findViewById(R.id.packetType);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.packet_types_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        packetTypeInput.setAdapter(adapter);
     }
 
     public void sendPacket(View view) {
@@ -45,6 +56,8 @@ public class BluetoothTester extends AppCompatActivity {
         Toast.makeText(this, fromIdInputString + "\n"
                             + toIdInputString + "\n"
                             + dataInputString, Toast.LENGTH_SHORT).show();
+        byte fromId;
+        byte toId;
 
         //Require a From ID number
         if(fromIdInputString.equals("") || fromIdInputString.equals(null)) {
@@ -59,8 +72,8 @@ public class BluetoothTester extends AppCompatActivity {
 
         //Try to parse the ID numbers
         try {
-            byte fromId = Byte.decode(fromIdInput.getText().toString());
-            byte toId = Byte.decode(toIdInput.getText().toString());
+            fromId = Byte.decode(fromIdInput.getText().toString());
+            toId = Byte.decode(toIdInput.getText().toString());
         } catch (NumberFormatException e) {
             //Data is not parsable
             Toast.makeText(this, "Invalid To or From ID", Toast.LENGTH_SHORT).show();
@@ -110,7 +123,8 @@ public class BluetoothTester extends AppCompatActivity {
         */
 
         //Send the data!!!
-        new SendMessageRunnable(Blos, , ));
+        //#TODO dynamically set the type
+        BTCommunicator.getInstance().asyncSendPacket(BTProtocol.Type.OTHER, fromId, toId, bytes);
     }
 
 }
