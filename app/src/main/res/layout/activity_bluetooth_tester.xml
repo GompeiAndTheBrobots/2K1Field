@@ -8,7 +8,7 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spinner"
+        android:id="@+id/packetType"
         android:layout_weight="1" />
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="0"
+        android:hint="ex. 0"
         android:ems="5"
         android:id="@+id/FromID" />
 
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="8"
+        android:hint="ex. 8"
         android:ems="5"
         android:id="@+id/ToID" />
 
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:hint="0xAB,0xCD,0xEF"
+        android:hint="ex. 0xAB,0xCD,0xEF"
         android:ems="10"
         android:id="@+id/extradata" />
 
