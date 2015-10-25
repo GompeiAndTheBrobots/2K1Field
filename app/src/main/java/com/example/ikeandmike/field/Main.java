@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.CompoundButton;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -21,7 +23,9 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private ScheduledThreadPoolExecutor fieldDataExecutor;
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
+
     private RadioButton heartbeatIndicator;
+    ToggleButton toggleField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,37 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
 
         setupBluetooth();
+
+        this.toggleField = (ToggleButton)findViewById(R.id.toggleField);
+        this.toggleField.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Set Field option buttons to correspond with the state of the Field Toggle
+                findViewById(R.id.Storage1).setEnabled(isChecked);
+                findViewById(R.id.Storage2).setEnabled(isChecked);
+                findViewById(R.id.Storage3).setEnabled(isChecked);
+                findViewById(R.id.Storage4).setEnabled(isChecked);
+                findViewById(R.id.Supply1).setEnabled(isChecked);
+                findViewById(R.id.Supply2).setEnabled(isChecked);
+                findViewById(R.id.Supply3).setEnabled(isChecked);
+                findViewById(R.id.Supply4).setEnabled(isChecked);
+
+                if(!isChecked) { //Manual mode enabled
+                    //All buttons set off
+                    ((ToggleButton)findViewById(R.id.Storage1)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Storage2)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Storage3)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Storage4)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Supply1)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Supply2)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Supply3)).setChecked(false);
+                    ((ToggleButton)findViewById(R.id.Supply4)).setChecked(false);
+                    //Field set to 0
+                    FieldState state = FieldState.getInstance();
+                    state.setStorageSupplyByte((byte)0);
+                }
+            }
+        });
     }
 
     private void setupBluetooth(){
@@ -139,9 +174,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                 mask = 1 << 3;
                 break;
 
-            case R.id.toggleField:
-                Log.e("Success:", "Field Access Toggled");
-                break;
             case R.id.Resume:
                 Log.e("Success:", "Resume Button Pressed");
                 break;
