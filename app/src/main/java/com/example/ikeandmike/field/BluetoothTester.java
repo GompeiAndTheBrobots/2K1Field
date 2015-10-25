@@ -73,7 +73,7 @@ public class BluetoothTester extends AppCompatActivity {
         //Validate that the user data is valid
         //#TODO actually validate the string
 
-        if(byteStrings.length != 0 || (byteStrings.length!=1 && byteStrings[0].equals(""))) {
+        if(byteStrings.length != 0 && !(byteStrings.length==1 && byteStrings[0].equals(""))) {
             //Check that every split string has some characters in it
             for (String testString : byteStrings) {
                 if (testString.length() == 0) {
@@ -81,6 +81,9 @@ public class BluetoothTester extends AppCompatActivity {
                     return;
                 }
             }
+        } else {
+            //No data, set the byteStrings to an empty array
+            byteStrings = new String[0];
         }
 
         byte[] bytes = new byte[byteStrings.length];
@@ -89,7 +92,7 @@ public class BluetoothTester extends AppCompatActivity {
         try {
             for (int i = 0, n = byteStrings.length; i < n; i++) {
                 //#TODO may need to subtract value from 0xFF
-                bytes[i] = Byte.decode(byteStrings[i]);
+                bytes[i] = Integer.decode(byteStrings[i]).byteValue();
             }
         } catch (NumberFormatException e) {
             //Item was not parsable
@@ -97,9 +100,17 @@ public class BluetoothTester extends AppCompatActivity {
             return;
         }
 
-        //Send the data!!!
-        //#TODO
+        /* //Debugging to display the contents of the byte array
+        String bytedata = "{";
+        for(byte data : bytes) {
+            bytedata += String.format("%x, ", data);
+        }
+        bytedata += "}";
+        Toast.makeText(this, "Byte Data: " + bytedata, Toast.LENGTH_SHORT).show();
+        */
 
+        //Send the data!!!
+        new SendMessageRunnable(Blos, , ));
     }
 
 }
