@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="ex. 0"
+        android:text="0"
         android:ems="5"
         android:id="@+id/FromID"
         android:layout_margin="10dp"/>
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="ex. 8"
+        android:text="12"
         android:ems="5"
         android:id="@+id/ToID"
         android:layout_margin="10dp"/>
@@ -58,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:hint="ex. 0xAB,0xCD,0xEF"
+        android:text="0x3,0x01,0x02"
         android:ems="10"
         android:id="@+id/extradata"
         android:layout_margin="10dp"/>

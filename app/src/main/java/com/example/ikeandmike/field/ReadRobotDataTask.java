@@ -58,7 +58,7 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
         byte[] data = new byte[dataSize];
 
         for (int i=0;i<dataSize;i++){
-            data[i] = packet[i+4];
+            data[i] = packet[i+5];
         }
 
         if (type == BTProtocol.Type.HEARTBEAT.id()){
@@ -70,8 +70,8 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
         else if (type == BTProtocol.Type.STATUS.id()) {
             properType = BTProtocol.Type.STATUS;
         }
-        else if (type == BTProtocol.Type.OTHER.id()){
-            properType = BTProtocol.Type.OTHER;
+        else if (type == BTProtocol.Type.DEBUG.id()){
+            properType = BTProtocol.Type.DEBUG;
         }
         else {
             for (BluetoothMessageCallback listener : listeners) {

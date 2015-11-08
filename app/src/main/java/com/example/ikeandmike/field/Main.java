@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -30,7 +31,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         View.OnClickListener,
         CompoundButton.OnCheckedChangeListener,
         Animation.AnimationListener,
-        FieldStateChangeInterface{
+        FieldStateChangeInterface {
 
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
@@ -42,12 +43,13 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
     private ToggleButton toggleField;
+    private TextView statusText, debugText;
 
     private boolean useFieldData = true;
 
-    public static int[] buttonIds = new int[] {
-        R.id.Supply1, R.id.Supply2, R.id.Supply3, R.id.Supply4,
-                R.id.Storage1, R.id.Storage2, R.id.Storage3, R.id.Storage4
+    public static int[] buttonIds = new int[]{
+            R.id.Supply1, R.id.Supply2, R.id.Supply3, R.id.Supply4,
+            R.id.Storage1, R.id.Storage2, R.id.Storage3, R.id.Storage4
     };
 
     @Override
@@ -64,6 +66,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
         toggleField = (ToggleButton) findViewById(R.id.toggleField);
         resetButton = (Button) findViewById(R.id.resetButton);
+        debugText = (TextView) findViewById(R.id.debug);
+        statusText = (TextView) findViewById(R.id.status);
 
         mDetector = new GestureDetectorCompat(this,
                 new SimpleGestureListener(this,
@@ -88,10 +92,13 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         animation.setAnimationListener(this);
 
         setupBluetooth();
+
+        //also, turn on field sending
+        BTCommunicator.sendingFieldData = true;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         this.mDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
@@ -105,8 +112,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                         comms.connect();
                         comms.addConnectorListener(this);
                         comms.addOnMessageListener(this);
-                    }
-                    else {
+                    } else {
                         Toast.makeText(Main.this, "Already connected", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -165,21 +171,27 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     public void validMessage(BTProtocol.Type type, byte[] data) {
         if (type == BTProtocol.Type.HEARTBEAT) {
             heartbeatIndicator.setChecked(!heartbeatIndicator.isChecked());
-        }
-        else if (type == BTProtocol.Type.ALERT)  {
-            if (data[0] == 0x2C) {
+        } else if (type == BTProtocol.Type.ALERT) {
+            if (data[0] == BTProtocol.HIGH_RADIATION) {
                 //Low Radiation -- Yellow
                 radiationIndicator.setBackgroundColor(Color.YELLOW);
-            }
-            else if (data[0] == 0xFF) {
+            } else if (data[0] == BTProtocol.LOW_RADIATION) {
                 //High Radiation -- Red
                 radiationIndicator.setBackgroundColor(Color.RED);
-            }
-            else {
+            } else {
                 radiationIndicator.setBackgroundColor(Color.BLUE);
             }
             //Run animation
             radiationIndicator.startAnimation(animation);
+        } else if (type == BTProtocol.Type.STATUS) {
+            String status = BTProtocol.statusString(data);
+            statusText.setText(status);
+        } else if (type == BTProtocol.Type.DEBUG) {
+            String debug  = "";
+            for (Byte b : data){
+               debug += (char)(b & 0xFF);
+            }
+            debugText.setText(debug);
         }
     }
 
@@ -194,8 +206,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             comms.asyncSendResumeMessage();
         } else if (v.getId() == R.id.stop) {
             comms.asyncSendStopMessage();
-        }
-        else if (v.getId() == R.id.resetButton) {
+        } else if (v.getId() == R.id.resetButton) {
             Log.e(getClass().toString(), "resetting bluetooth");
             comms.close();
             setupBluetooth();

@@ -21,6 +21,10 @@ public class SendFieldRunnable implements  Runnable{
 
     @Override
     public void run(){
+        if (!BTCommunicator.sendingFieldData){
+            return;
+        }
+
         byte[] supplyData = new byte[1];
         byte[] storageData = new byte[1];
         byte data = FieldState.getInstance().getStorageSupplyByte();

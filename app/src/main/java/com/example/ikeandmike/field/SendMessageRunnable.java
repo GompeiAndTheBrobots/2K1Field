@@ -18,13 +18,6 @@ public class SendMessageRunnable implements Runnable {
         packet = BTProtocol.createPacket(type, fromId, toId, new byte[0]);
     }
 
-    SendMessageRunnable(OutputStream os, BTProtocol.Type type, byte fromId, byte toId, byte data){
-        this.os = os;
-        byte[] dataArr = new byte[1];
-        dataArr[0] = data;
-        packet = BTProtocol.createPacket(type, fromId, toId, dataArr);
-    }
-
     SendMessageRunnable(OutputStream os, BTProtocol.Type type, byte fromId, byte toId, byte[] data) {
         packet = BTProtocol.createPacket(type, fromId, toId, data);
     }
@@ -36,10 +29,10 @@ public class SendMessageRunnable implements Runnable {
             for (byte b : packet){
                 str += Byte.toString(b) +" ";
             }
-            Log.e(getClass().toString(), str);
             os.write(packet);
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("SendMessageRunnable","send message runnable failed");
         }
     }
 }

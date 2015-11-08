@@ -46,6 +46,9 @@ public class BluetoothTester extends AppCompatActivity {
                 new SimpleGestureListener(this,
                         Main.class,
                         SimpleGestureListener.LEFT));
+
+        //also, turn off field sending
+        BTCommunicator.sendingFieldData = false;
     }
 
     @Override
@@ -139,12 +142,12 @@ public class BluetoothTester extends AppCompatActivity {
             packetType = BTProtocol.Type.STATUS;
         } else if(packetTypeInputString.equals("HEARTBEAT")) {
             packetType = BTProtocol.Type.HEARTBEAT;
-        } else if(packetTypeInputString.equals("OTHER")) {
-            packetType = BTProtocol.Type.OTHER;
+        } else if(packetTypeInputString.equals("DEBUG")) {
+            packetType = BTProtocol.Type.DEBUG;
         } else {
-            packetType = BTProtocol.Type.OTHER;
+            packetType = BTProtocol.Type.DEBUG;
         }
-        
+
         //Send the data!!!
         BTCommunicator.getInstance().asyncSendPacket(packetType, fromId, toId, bytes);
     }

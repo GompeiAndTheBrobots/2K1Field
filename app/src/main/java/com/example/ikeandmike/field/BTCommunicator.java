@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
  */
 public class BTCommunicator implements BluetoothConnectionCallback {
 
+    public static boolean sendingFieldData = false;
     private BluetoothDevice robot;
     private BluetoothAdapter bTAdapter;
     private ScheduledThreadPoolExecutor fieldDataExecutor;
@@ -74,22 +75,20 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     }
 
     public boolean foundRobot(BluetoothDevice device) {
-        if (device.getName().contains("RBE")) {
-            Pattern teamNumberPattern = Pattern.compile("RBE_BT([0-9]*)");
-            Matcher matcher = teamNumberPattern.matcher(device.getName());
-            if (matcher.find()) {
-                try {
-                    robot = device;
-                    BTProtocol.TeamNumber = Integer.parseInt(matcher.group(1));
-                    return true;
-                } catch (NumberFormatException e) {
-                    // no way will this actually happen...right?
-                    e.printStackTrace();
-                }
-            } else {
-                Log.w("not team #", device.getName());
+        Pattern teamNumberPattern = Pattern.compile(".*BT.*([0-9]+)");
+        Matcher matcher = teamNumberPattern.matcher(device.getName());
+        if (matcher.find()) {
+            Log.e("found team num", matcher.group(1));
+            try {
+                robot = device;
+                BTProtocol.TeamNumber = Integer.parseInt(matcher.group(1));
+                return true;
+            } catch (NumberFormatException e) {
+                // no way will this actually happen...right?
+                e.printStackTrace();
             }
         }
+        Log.w("not team #", device.getName());
         return false;
 
     }
