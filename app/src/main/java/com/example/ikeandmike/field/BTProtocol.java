@@ -119,7 +119,6 @@ class BTProtocol {
 
     public static byte[] createPacket(BTProtocol.Type type, byte fromID, byte toID, byte[] data) {
         //construct packet based on BT spec
-        Log.e("SIZE", "len = " + data.length);
         byte packet[] = new byte[data.length + 6];
         packet[0] = 0x5F;
         packet[1] = (byte) (type.length());
