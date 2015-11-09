@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -18,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -33,6 +33,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         Animation.AnimationListener,
         FieldStateChangeInterface {
 
+    private static final long SPAM_TIME = 100l;
     private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
     private FieldStateInterface fieldStateInterface;
@@ -40,10 +41,14 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private RadioButton heartbeatIndicator;
     private GestureDetectorCompat mDetector;
     private ImageView radiationIndicator;
+    private Loggers loggers;
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
     private ToggleButton toggleField;
-    private TextView statusText, debugText;
+
+    private long lastStatusTime = 0l;
+    private long lastDebugTime = 0l;
+
 
     private boolean useFieldData = true;
 
@@ -66,8 +71,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
         toggleField = (ToggleButton) findViewById(R.id.toggleField);
         resetButton = (Button) findViewById(R.id.resetButton);
-        debugText = (TextView) findViewById(R.id.debug);
-        statusText = (TextView) findViewById(R.id.status);
+
+        loggers = new Loggers(this);
 
         mDetector = new GestureDetectorCompat(this,
                 new SimpleGestureListener(this,
@@ -82,7 +87,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         for (int id : buttonIds) {
             ((Button) findViewById(id)).setOnClickListener(fieldStateInterface);
         }
-
 
         animation = new AlphaAnimation(1, 0);
         animation.setDuration(50);
@@ -171,28 +175,45 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     public void validMessage(BTProtocol.Type type, byte[] data) {
         if (type == BTProtocol.Type.HEARTBEAT) {
             heartbeatIndicator.setChecked(!heartbeatIndicator.isChecked());
+
         } else if (type == BTProtocol.Type.ALERT) {
-            if (data[0] == BTProtocol.HIGH_RADIATION) {
-                //Low Radiation -- Yellow
-                radiationIndicator.setBackgroundColor(Color.YELLOW);
-            } else if (data[0] == BTProtocol.LOW_RADIATION) {
-                //High Radiation -- Red
-                radiationIndicator.setBackgroundColor(Color.RED);
-            } else {
-                radiationIndicator.setBackgroundColor(Color.BLUE);
-            }
-            //Run animation
-            radiationIndicator.startAnimation(animation);
+            indicateRadiation(data);
+
         } else if (type == BTProtocol.Type.STATUS) {
-            String status = BTProtocol.statusString(data);
-            statusText.setText(status);
-        } else if (type == BTProtocol.Type.DEBUG) {
-            String debug  = "";
-            for (Byte b : data){
-               debug += (char)(b & 0xFF);
+            long t = System.currentTimeMillis();
+            long dt = t - lastStatusTime;
+            if (dt > SPAM_TIME) {
+                lastStatusTime = t;
+                String status = BTProtocol.statusString(data);
+                loggers.appendStatus(status);
             }
-            debugText.setText(debug);
+
+        } else if (type == BTProtocol.Type.DEBUG) {
+            long t = System.currentTimeMillis();
+            long dt = t - lastDebugTime;
+            if (dt > SPAM_TIME) {
+                lastDebugTime = t;
+                String debug = "";
+                for (Byte b : data) {
+                    debug += (char) (b & 0xFF);
+                }
+                loggers.appendDebug(debug);
+            }
         }
+    }
+
+    private void indicateRadiation(byte data[]) {
+        if (data[0] == BTProtocol.HIGH_RADIATION) {
+            //Low Radiation -- Yellow
+            radiationIndicator.setBackgroundColor(Color.YELLOW);
+        } else if (data[0] == BTProtocol.LOW_RADIATION) {
+            //High Radiation -- Red
+            radiationIndicator.setBackgroundColor(Color.RED);
+        } else {
+            radiationIndicator.setBackgroundColor(Color.BLUE);
+        }
+        //Run animation
+        radiationIndicator.startAnimation(animation);
     }
 
     @Override

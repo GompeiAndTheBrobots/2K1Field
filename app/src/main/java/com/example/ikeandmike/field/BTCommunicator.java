@@ -111,6 +111,8 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     public void close() {
         connected = false;
         listeners.clear();
+        fieldDataExecutor.shutdownNow();
+        readDataTask.cancel(true);
         try {
             connector.close();
             is.close();
