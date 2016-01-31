@@ -1,12 +1,6 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
-import android.util.Log;
-
-import com.hoho.android.usbserial.driver.ProbeTable;
-
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 /**
  * Created by peter on 10/24/15.

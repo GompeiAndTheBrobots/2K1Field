@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ikeandmike.field" >
+    package="edu.wpi.rbe.field" >
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
 
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Main"
+            android:name="edu.wpi.rbe.field.Main"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
@@ -31,7 +31,7 @@
                 android:resource="@xml/device_filter" />
         </activity>
         <activity
-            android:name=".BluetoothTester"
+            android:name="edu.wpi.rbe.field.BluetoothTester"
             android:label="BluetoothTester">
 
         </activity>

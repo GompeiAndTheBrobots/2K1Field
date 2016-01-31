@@ -1,4 +1,4 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;

@@ -1,10 +1,8 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 
-import android.bluetooth.BluetoothSocket;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.RadioButton;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 /**
  * Encapsulates functionality to create/destroy connections, and communicate with

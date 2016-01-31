@@ -1,6 +1,4 @@
-package com.example.ikeandmike.field;
-
-import android.util.Log;
+package edu.wpi.rbe.field;
 
 /**
  * @brief This class abstracts out the protocols for bluetooth

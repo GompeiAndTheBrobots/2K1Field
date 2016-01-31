@@ -1,4 +1,4 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;

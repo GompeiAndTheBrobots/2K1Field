@@ -1,7 +1,6 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ScrollView;

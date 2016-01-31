@@ -1,4 +1,4 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 interface BluetoothMessageCallback {
     void validMessage(BTProtocol.Type type, byte[] data);

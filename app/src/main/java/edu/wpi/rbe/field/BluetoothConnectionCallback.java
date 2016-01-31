@@ -1,7 +1,4 @@
-package com.example.ikeandmike.field;
-
-import java.io.InputStream;
-import java.io.OutputStream;
+package edu.wpi.rbe.field;
 
 interface BluetoothConnectionCallback {
     void successfulConnect();

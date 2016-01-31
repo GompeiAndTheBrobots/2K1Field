@@ -1,8 +1,7 @@
-package com.example.ikeandmike.field;
+package edu.wpi.rbe.field;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
