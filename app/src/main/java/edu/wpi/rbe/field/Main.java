@@ -33,7 +33,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         FieldStateChangeInterface {
 
     private static final long SPAM_TIME = 100l;
-    private FieldUSBCommunicator fieldComms;
     private BTCommunicator comms = BTCommunicator.getInstance();
     private FieldStateInterface fieldStateInterface;
 
@@ -128,8 +127,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         } else {
             Toast.makeText(this, "Your device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
         }
-
-        fieldComms = new FieldUSBCommunicator(this);
     }
 
     @Override
@@ -144,13 +141,11 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     @Override
     protected void onResume() {
         super.onResume();
-        fieldComms.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        fieldComms.onPause();
     }
 
     public void successfulConnect() {

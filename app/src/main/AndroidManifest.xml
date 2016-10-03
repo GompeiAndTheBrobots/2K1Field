@@ -3,6 +3,7 @@
     package="edu.wpi.rbe.field" >
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-sdk android:minSdkVersion="12"/>
 
     <application
         android:allowBackup="true"
