@@ -49,9 +49,8 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
             try {
                 socket.close();
             } catch (IOException e) {}
-            connectException.printStackTrace();
-            Log.e("BT Connector", "Bluetooth failed to connect!");
         }
+        // nicely handle errors in onPostExecute
         return false;
     }
 

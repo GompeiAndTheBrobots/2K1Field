@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -123,17 +124,25 @@ public class BTCommunicator implements BluetoothConnectionCallback {
     }
 
     public void asyncSendStopMessage() {
-        fieldDataExecutor.execute(new SendMessageRunnable(os,
-                BTProtocol.Type.STOP,
-                (byte) 0,
-                (byte) BTProtocol.TeamNumber));
+        if (fieldDataExecutor != null) {
+            try {
+                fieldDataExecutor.execute(new SendMessageRunnable(os,
+                        BTProtocol.Type.STOP,
+                        (byte) 0,
+                        (byte) BTProtocol.TeamNumber));
+            } catch (RejectedExecutionException re) { }
+        }
     }
 
     public void asyncSendResumeMessage() {
-        fieldDataExecutor.execute(new SendMessageRunnable(os,
-                BTProtocol.Type.RESUME,
-                (byte) 0,
-                (byte) BTProtocol.TeamNumber));
+        if (fieldDataExecutor != null) {
+            try {
+                fieldDataExecutor.execute(new SendMessageRunnable(os,
+                        BTProtocol.Type.RESUME,
+                        (byte) 0,
+                        (byte) BTProtocol.TeamNumber));
+            } catch (RejectedExecutionException re) { }
+        }
     }
 
     public void asyncSendFieldData() {

@@ -26,7 +26,7 @@ public class SendFieldRunnable implements  Runnable{
         byte[] storageData = new byte[1];
         byte data = FieldState.getInstance().getStorageSupplyByte();
         storageData[0] = (byte)(data & 0x0F);
-        supplyData[0] = (byte)(data >> 4);
+        supplyData[0] = (byte)(0xf & (data >> 4));
 
         byte[] storagePacket = BTProtocol.createPacket(BTProtocol.Type.STORAGE, (byte) 0,
                 (byte) 0x0, storageData);
@@ -41,7 +41,9 @@ public class SendFieldRunnable implements  Runnable{
             Thread.sleep(500);
             os.write(storagePacket);
         } catch (Exception e) {
-            e.printStackTrace();
+            // This means the robot was turned off
+            // so just ignore it
+            Log.d("ROBOT OFF", "Couldn't send.");
         }
 
     }

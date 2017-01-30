@@ -6,12 +6,13 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
  * Created by peter on 10/24/15.
  */
-public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
+public class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
 
     InputStream is;
     List<BluetoothMessageCallback> listeners;
@@ -22,7 +23,7 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
         this.is = is;
     }
 
-    protected Void doInBackground(Void... params) {
+    protected Boolean doInBackground(Void... params) {
         while (true) {
             try {
                 if (is.read() == 0x5f) {
@@ -40,8 +41,11 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
                         }
                     }
                 }
+            } catch (NullPointerException ne) {
             } catch (IOException e) {
-                e.printStackTrace();
+                // This means the robot was turned off
+                Log.e("ROBOT OFF", "Couldn't receive.");
+                return false;
             }
         }
     }
@@ -82,6 +86,13 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Void> {
         }
     }
 
-    protected void onPostExecute(Void v) {
+    protected void onPostExecute(Boolean success) {
+        if (!success) {
+            try {
+                for (BluetoothMessageCallback listener : listeners) {
+                    listener.robotDisconnected();
+                }
+            } catch (ConcurrentModificationException e) {}
+        }
     }
 }

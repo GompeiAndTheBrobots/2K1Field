@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * Created by peter on 10/24/15.
@@ -30,9 +31,8 @@ public class SendMessageRunnable implements Runnable {
                 str += Byte.toString(b) +" ";
             }
             os.write(packet);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("SendMessageRunnable","send message runnable failed");
+        } catch (IOException ioe) {
+            Log.d("SendMessageRunnable","send message failed");
         }
     }
 }

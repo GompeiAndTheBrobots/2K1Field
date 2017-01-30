@@ -17,7 +17,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -28,7 +27,6 @@ import android.widget.ToggleButton;
 public class Main extends AppCompatActivity implements BluetoothConnectionCallback,
         BluetoothMessageCallback,
         View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener,
         Animation.AnimationListener,
         FieldStateChangeInterface {
 
@@ -42,7 +40,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private Loggers loggers;
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
-    private ToggleButton toggleField;
 
     private long lastStatusTime = 0l;
     private long lastDebugTime = 0l;
@@ -67,7 +64,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
         radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
-        toggleField = (ToggleButton) findViewById(R.id.toggleField);
         resetButton = (Button) findViewById(R.id.resetButton);
 
         loggers = new Loggers(this);
@@ -79,7 +75,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
         stopButton.setOnClickListener(this);
         resumeButton.setOnClickListener(this);
-        toggleField.setOnCheckedChangeListener(this);
         resetButton.setOnClickListener(this);
 
         for (int id : buttonIds) {
@@ -211,8 +206,14 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     }
 
     @Override
+    public void robotDisconnected() {
+        Toast.makeText(Main.this, "Robot disconnected", Toast.LENGTH_SHORT).show();
+        comms.close();
+    }
+
+    @Override
     public void invalidMessage() {
-        Toast.makeText(Main.this, "Invalid message we received!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Main.this, "Invalid message were received!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -222,25 +223,8 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         } else if (v.getId() == R.id.stop) {
             comms.asyncSendStopMessage();
         } else if (v.getId() == R.id.resetButton) {
-            Log.e(getClass().toString(), "resetting bluetooth");
-            comms.close();
             setupBluetooth();
         }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        for (int id : buttonIds) {
-            if (isChecked) {
-                findViewById(id).setEnabled(true);
-            } else {
-                ((ToggleButton) findViewById(id)).setChecked(false);
-                ((ToggleButton) findViewById(id)).setEnabled(false);
-                FieldState state = FieldState.getInstance();
-                state.setStorageSupplyByte((byte) 0);
-            }
-        }
-        useFieldData = !isChecked;
     }
 
     @Override
