@@ -1,4 +1,5 @@
 # android studio stuff
+app/*.apk
 .idea/
 .gradle
 build
