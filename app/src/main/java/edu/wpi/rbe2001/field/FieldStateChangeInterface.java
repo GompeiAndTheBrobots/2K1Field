@@ -1,4 +1,4 @@
-package edu.wpi.rbe.field;
+package edu.wpi.rbe2001.field;
 
 /**
  * Interface for objects that want events to happen when the field state

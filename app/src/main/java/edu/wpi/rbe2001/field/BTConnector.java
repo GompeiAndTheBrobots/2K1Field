@@ -1,9 +1,8 @@
-package edu.wpi.rbe.field;
+package edu.wpi.rbe2001.field;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;

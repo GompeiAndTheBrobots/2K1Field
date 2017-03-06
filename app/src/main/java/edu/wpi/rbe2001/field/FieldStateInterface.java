@@ -1,12 +1,9 @@
-package edu.wpi.rbe.field;
+package edu.wpi.rbe2001.field;
 
 import android.view.View;
 import android.widget.Button;
 
-/**
- * Created by peter on 10/24/15.
- */
-public class FieldStateInterface implements FieldStateChangeInterface, Button.OnClickListener {
+class FieldStateInterface implements FieldStateChangeInterface, Button.OnClickListener {
 
     @Override
     public void onFieldStateChange(Byte supplyStorageByte) {

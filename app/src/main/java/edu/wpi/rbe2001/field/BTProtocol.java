@@ -1,17 +1,17 @@
-package edu.wpi.rbe.field;
+package edu.wpi.rbe2001.field;
 
 /**
  * @brief This class abstracts out the protocols for bluetooth
  * It is used by both and USB connection to the field computer
  */
 
-class BTProtocol {
+abstract class BTProtocol {
 
-    public static final int HIGH_RADIATION = 44;
-    public static final int LOW_RADIATION = -1;
-    public static int TeamNumber = -1;
+    static final int LOW_RADIATION = 44;
+    static final int HIGH_RADIATION = -1;
+    static int TeamNumber = -1;
 
-    public enum Type {
+    enum Type {
         // 5 is for all the necessary stuff
         SUPPLY((byte) 0x6, (byte) 0x1),
         STORAGE((byte) 0x6, (byte) 0x2),
@@ -39,21 +39,11 @@ class BTProtocol {
         }
     }
 
-    public Type messageType;
+    Type messageType;
 
-    private byte[] data;
+    static final int REQUEST_ENABLE_BT = 1;
 
-    /**
-     * @brief give it the data, you get a packet
-     */
-    public BTProtocol(Type type, byte[] data) {
-        this.messageType = type;
-        this.data = data;
-    }
-
-    public static final int REQUEST_ENABLE_BT = 1;
-
-    public static String statusString(byte[] data) {
+    static String statusString(byte[] data) {
         String movement = "INVALID";
         String gripper = "INVALID";
         String operation = "INVALID";
@@ -115,7 +105,7 @@ class BTProtocol {
         return (byte) chk;
     }
 
-    public static byte[] createPacket(BTProtocol.Type type, byte fromID, byte toID, byte[] data) {
+    static byte[] createPacket(BTProtocol.Type type, byte fromID, byte toID, byte[] data) {
         //construct packet based on BT spec
         byte packet[] = new byte[data.length + 6];
         packet[0] = 0x5F;

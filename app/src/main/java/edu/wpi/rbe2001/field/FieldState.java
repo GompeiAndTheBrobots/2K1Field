@@ -1,4 +1,4 @@
-package edu.wpi.rbe.field;
+package edu.wpi.rbe2001.field;
 
 
 import java.util.ArrayList;
@@ -60,6 +60,4 @@ public class FieldState {
     }
 
     //#TODO add functionality to deregister listeners
-
-
 }

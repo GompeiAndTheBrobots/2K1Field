@@ -1,4 +1,4 @@
-package edu.wpi.rbe.field;
+package edu.wpi.rbe2001.field;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -17,6 +16,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -37,12 +37,13 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private RadioButton heartbeatIndicator;
     private GestureDetectorCompat mDetector;
     private ImageView radiationIndicator;
+    private TextView radiationInfo;
     private Loggers loggers;
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
 
-    private long lastStatusTime = 0l;
-    private long lastDebugTime = 0l;
+    private long lastStatusTime = 0L;
+    private long lastDebugTime = 0L;
 
 
     private boolean useFieldData = true;
@@ -60,10 +61,11 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         fieldStateInterface = new FieldStateInterface();
         FieldState.getInstance().registerFieldStateChangeListener(this);
 
-        heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeatIndicator);
+        heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeart_indicator);
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
-        radiationIndicator = (ImageView) findViewById(R.id.radiationIndicator);
+        radiationIndicator = (ImageView) findViewById(R.id.radiation_indicator);
+        radiationInfo = (TextView) findViewById(R.id.radiation_info);
         resetButton = (Button) findViewById(R.id.resetButton);
 
         loggers = new Loggers(this);
@@ -78,7 +80,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         resetButton.setOnClickListener(this);
 
         for (int id : buttonIds) {
-            ((Button) findViewById(id)).setOnClickListener(fieldStateInterface);
+            (findViewById(id)).setOnClickListener(fieldStateInterface);
         }
 
         animation = new AlphaAnimation(1, 0);
@@ -193,13 +195,14 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
     private void indicateRadiation(byte data[]) {
         if (data[0] == BTProtocol.HIGH_RADIATION) {
-            //Low Radiation -- Yellow
-            radiationIndicator.setBackgroundColor(Color.YELLOW);
-        } else if (data[0] == BTProtocol.LOW_RADIATION) {
-            //High Radiation -- Red
             radiationIndicator.setBackgroundColor(Color.RED);
+            radiationInfo.setText("HIGH");
+        } else if (data[0] == BTProtocol.LOW_RADIATION) {
+            radiationIndicator.setBackgroundColor(Color.YELLOW);
+            radiationInfo.setText("LOW");
         } else {
             radiationIndicator.setBackgroundColor(Color.BLUE);
+            radiationInfo.setText("Unknown");
         }
         //Run animation
         radiationIndicator.startAnimation(animation);

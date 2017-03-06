@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">RBE 2001</string>
+    <string name="empty">Empty</string>
+    <string name="full">Full</string>
+    <string name="storage">Storage</string>
+    <string name="supply">Supply</string>
+    <string name="reset_bluetooth">Reset Bluetooth</string>
+    <string name="debug_information">Debug Information</string>
+    <string name="status_information">Status information</string>
+    <string name="resume">Send Resume</string>
+    <string name="stop">Send Stop</string>
+    <string name="radiation_indicator">Radiation Indicator</string>
+    <string name="heartbeat">Heartbeat</string>
+    <string name="radiation">Radiation</string>
+    <string name="none">None</string>
 </resources>
