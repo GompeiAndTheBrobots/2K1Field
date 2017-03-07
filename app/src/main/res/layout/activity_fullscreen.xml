@@ -64,47 +64,38 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_marginRight="15dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginRight="10dp"
                 android:text="@string/heartbeat"/>
 
-            <RadioButton
+            <ImageView
                 android:id="@+id/heartbeart_indicator"
-                android:layout_gravity="center"
-                android:enabled="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
+                android:contentDescription="@string/radiation_indicator"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@color/black"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="0.5">
 
             <TextView
                 android:id="@+id/radiation_label"
                 android:layout_width="wrap_content"
-                android:layout_marginRight="15dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/radiation"/>
-
-            <ImageView
-                android:id="@+id/radiation_indicator"
-                android:contentDescription="@string/radiation_indicator"
-                android:layout_width="30dp"
                 android:layout_marginRight="10dp"
-                android:layout_height="30dp"
-                android:background="@color/black"/>
+                android:text="@string/radiation"/>
 
             <TextView
                 android:id="@+id/radiation_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:textColor="@color/white"
                 android:text="@string/none"/>
 
         </LinearLayout>

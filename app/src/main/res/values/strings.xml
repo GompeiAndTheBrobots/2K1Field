@@ -19,4 +19,7 @@
     <string name="error_information">Error Information</string>
     <string name="log_information">Message Logs</string>
     <string name="clear">Clear</string>
+    <string name="high">HIGH</string>
+    <string name="low">LOW</string>
+    <string name="unkown">Unknown</string>
 </resources>

@@ -6,7 +6,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-class Loggers implements ViewTreeObserver.OnScrollChangedListener {
+class Loggers implements ViewTreeObserver.OnScrollChangedListener, View.OnLongClickListener {
 
     private TextView logText;
     private ScrollView infoScroll;
@@ -18,6 +18,7 @@ class Loggers implements ViewTreeObserver.OnScrollChangedListener {
     Loggers(Activity a) {
         logText = (TextView) a.findViewById(R.id.logView);
         infoScroll = (ScrollView) a.findViewById(R.id.info_scroll);
+        logText.setOnLongClickListener(this);
 
         infoScroll.getViewTreeObserver().addOnScrollChangedListener(this);
     }
@@ -41,5 +42,11 @@ class Loggers implements ViewTreeObserver.OnScrollChangedListener {
         if (autoScrollToBottom) {
             infoScroll.fullScroll(View.FOCUS_DOWN);
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        logText.setText("");
+        return true;
     }
 }

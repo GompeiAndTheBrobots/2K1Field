@@ -7,20 +7,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -35,15 +32,13 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private BTCommunicator comms = BTCommunicator.getInstance();
     private FieldStateInterface fieldStateInterface;
 
-    private RadioButton heartbeatIndicator;
-    private ImageView radiationIndicator;
+    private ImageView heartbeatIndicator;
     private TextView radiationInfo;
     private Loggers loggers;
     private Animation animation;
     private Button stopButton, resumeButton, resetButton;
 
-    private long lastStatusTime = 0L;
-    private long lastDebugTime = 0L;
+    private long lastMsgTime = 0L;
 
 
     private boolean useFieldData = true;
@@ -61,10 +56,9 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         fieldStateInterface = new FieldStateInterface();
         FieldState.getInstance().registerFieldStateChangeListener(this);
 
-        heartbeatIndicator = (RadioButton) findViewById(R.id.heartbeart_indicator);
+        heartbeatIndicator = (ImageView) findViewById(R.id.heartbeart_indicator);
         stopButton = (Button) findViewById(R.id.stop);
         resumeButton = (Button) findViewById(R.id.resume);
-        radiationIndicator = (ImageView) findViewById(R.id.radiation_indicator);
         radiationInfo = (TextView) findViewById(R.id.radiation_info);
         resetButton = (Button) findViewById(R.id.resetButton);
 
@@ -78,11 +72,9 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
             (findViewById(id)).setOnClickListener(fieldStateInterface);
         }
 
-        animation = new AlphaAnimation(1, 0);
-        animation.setDuration(50);
+        animation = new AlphaAnimation(1, 1);
+        animation.setDuration(100);
         animation.setInterpolator(new LinearInterpolator());
-        animation.setRepeatMode(Animation.REVERSE);
-        animation.setRepeatCount(1);
         animation.setAnimationListener(this);
 
         setupBluetooth();
@@ -187,16 +179,18 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     @Override
     public void validMessage(BTProtocol.Type type, byte[] data) {
         if (type == BTProtocol.Type.HEARTBEAT) {
-            heartbeatIndicator.setChecked(!heartbeatIndicator.isChecked());
+            //Run animation and set color
+            heartbeatIndicator.setBackgroundColor(Color.RED);
+            heartbeatIndicator.startAnimation(animation);
 
         } else if (type == BTProtocol.Type.ALERT) {
             indicateRadiation(data);
 
         } else if (type == BTProtocol.Type.STATUS || type == BTProtocol.Type.DEBUG) {
             long t = System.currentTimeMillis();
-            long dt = t - lastStatusTime;
+            long dt = t - lastMsgTime;
             if (dt > SPAM_TIME) {
-                lastStatusTime = t;
+                lastMsgTime = t;
                 String msg = "";
                 if (type == BTProtocol.Type.STATUS) {
                     msg = BTProtocol.statusString(data);
@@ -218,17 +212,12 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
     private void indicateRadiation(byte data[]) {
         if (data[0] == BTProtocol.HIGH_RADIATION) {
-            radiationIndicator.setBackgroundColor(Color.RED);
-            radiationInfo.setText("HIGH");
+            radiationInfo.setText(R.string.high);
         } else if (data[0] == BTProtocol.LOW_RADIATION) {
-            radiationIndicator.setBackgroundColor(Color.YELLOW);
-            radiationInfo.setText("LOW");
+            radiationInfo.setText(R.string.low);
         } else {
-            radiationIndicator.setBackgroundColor(Color.BLUE);
-            radiationInfo.setText("Unknown");
+            radiationInfo.setText(R.string.unkown);
         }
-        //Run animation
-        radiationIndicator.startAnimation(animation);
     }
 
     @Override
@@ -254,8 +243,7 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        radiationIndicator.setBackgroundColor(Color.BLACK);
-        radiationIndicator.clearAnimation();
+        heartbeatIndicator.setBackgroundColor(Color.BLACK);
     }
 
     @Override

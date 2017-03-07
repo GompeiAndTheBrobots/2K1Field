@@ -78,8 +78,8 @@ class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
             }
 
             // check checksum
-            byte correct_checksum = BTProtocol.calcChecksum(data);
-            byte checksum = packet[packetSize - 1];
+            byte correct_checksum = BTProtocol.calcChecksum(packet);
+            byte checksum = packet[packetSize];
 
             if (correct_checksum == checksum) {
                 for (BluetoothMessageCallback listener : listeners) {
