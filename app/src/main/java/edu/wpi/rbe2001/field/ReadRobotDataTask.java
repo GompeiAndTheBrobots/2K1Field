@@ -52,51 +52,63 @@ class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
         byte packet[] = packets[0];
         int packetSize = packet[1];
 
-        if (packetSize >= 5) {
-            int dataSize = packetSize - 5;
-            int type = (int) packet[2];
-
-            BTProtocol.Type properType;
-            byte[] data = new byte[dataSize];
-
-            // copy bytes out of packet into data
-            System.arraycopy(data, 0, packet, 5, dataSize);
-
-            if (type == BTProtocol.Type.HEARTBEAT.id()) {
-                properType = BTProtocol.Type.HEARTBEAT;
-            } else if (type == BTProtocol.Type.ALERT.id()) {
-                properType = BTProtocol.Type.ALERT;
-            } else if (type == BTProtocol.Type.STATUS.id()) {
-                properType = BTProtocol.Type.STATUS;
-            } else if (type == BTProtocol.Type.DEBUG.id()) {
-                properType = BTProtocol.Type.DEBUG;
-            } else {
-                for (BluetoothMessageCallback listener : listeners) {
-                    listener.invalidMessage("Unknown packet type: " + type);
-                }
-                return;
-            }
-
-            // check checksum
-            byte correct_checksum = BTProtocol.calcChecksum(packet);
-            byte checksum = packet[packetSize];
-
-            if (correct_checksum == checksum) {
-                for (BluetoothMessageCallback listener : listeners) {
-                    listener.validMessage(properType, data);
-                }
-            }
-            else {
-                for (BluetoothMessageCallback listener : listeners) {
-                    listener.invalidMessage("Checksum was " +
-                                            checksum + " but it should be " + correct_checksum);
-                }
-            }
-        }
-        else {
+        if (packetSize < 5){
             for (BluetoothMessageCallback listener : listeners) {
-                listener.invalidMessage("Unknown packet type: " + packetSize);
+                listener.invalidMessage("packet is of length " + packetSize +
+                                        " but it must be >= 5");
             }
+            return;
+        }
+
+        int dataSize = packetSize - 5;
+        int type = (int) packet[2];
+
+        BTProtocol.Type properType;
+        byte[] data = new byte[dataSize];
+
+        // copy bytes out of packet into data
+        System.arraycopy(data, 0, packet, 5, dataSize);
+
+        if (type == BTProtocol.Type.HEARTBEAT.id()) {
+            properType = BTProtocol.Type.HEARTBEAT;
+        } else if (type == BTProtocol.Type.ALERT.id()) {
+            properType = BTProtocol.Type.ALERT;
+        } else if (type == BTProtocol.Type.STATUS.id()) {
+            properType = BTProtocol.Type.STATUS;
+        } else if (type == BTProtocol.Type.DEBUG.id()) {
+            properType = BTProtocol.Type.DEBUG;
+        } else {
+            for (BluetoothMessageCallback listener : listeners) {
+                listener.invalidMessage("Unknown packet type: " + type);
+            }
+            return;
+        }
+
+        // check team number
+        byte team_number = packet[3];
+        if (BTProtocol.TeamNumber != team_number) {
+            for (BluetoothMessageCallback listener : listeners) {
+                listener.invalidMessage("Team number was " + team_number +
+                                        " but it should be " + BTProtocol.TeamNumber);
+            }
+            return;
+        }
+
+        // check checksum
+        byte correct_checksum = BTProtocol.calcChecksum(packet);
+        byte checksum = packet[packetSize];
+
+        if (correct_checksum != checksum) {
+            for (BluetoothMessageCallback listener : listeners) {
+                listener.invalidMessage("Checksum was " +
+                        checksum + " but it should be " + correct_checksum);
+            }
+            return;
+        }
+
+        // if everything went well, report a valid message
+        for (BluetoothMessageCallback listener : listeners) {
+            listener.validMessage(properType, data);
         }
     }
 
