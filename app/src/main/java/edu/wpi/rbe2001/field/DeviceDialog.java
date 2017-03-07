@@ -35,7 +35,6 @@ public class DeviceDialog extends DialogFragment implements DialogInterface.OnCl
     @Override
     public void onClick(DialogInterface dialog, int which) {
         String selected_device_name = this.device_names.get(which);
-        Log.e("Click", String.valueOf(which) + " " + selected_device_name);
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.robot_name), selected_device_name);

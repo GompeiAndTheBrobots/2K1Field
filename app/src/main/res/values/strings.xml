@@ -16,4 +16,7 @@
     <string name="settings" />
     <string name="robot_name">robot_name</string>
     <string name="pick_robot">Select Your Robot</string>
+    <string name="error_information">Error Information</string>
+    <string name="log_information">Message Logs</string>
+    <string name="clear">Clear</string>
 </resources>

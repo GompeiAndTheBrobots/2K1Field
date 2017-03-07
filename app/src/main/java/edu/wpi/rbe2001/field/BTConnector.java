@@ -38,6 +38,7 @@ public class BTConnector extends AsyncTask<Void, Void, Boolean>{
 
     public Boolean doInBackground(Void... inputs) {
         try {
+            // the hackiest of all hacks!
             socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket",
                     new Class[] {int.class}).invoke(device,1);
             socket.connect();

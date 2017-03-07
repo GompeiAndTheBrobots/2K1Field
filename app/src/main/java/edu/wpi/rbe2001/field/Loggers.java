@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 class Loggers implements ViewTreeObserver.OnScrollChangedListener {
 
-    private TextView statusText, debugText;
+    private TextView logText;
     private ScrollView infoScroll;
     private static final int RATE_SWIPE_UP = -15;
     private static final int RATE_SWIPE_DOWN = 35;
@@ -16,8 +16,7 @@ class Loggers implements ViewTreeObserver.OnScrollChangedListener {
     private boolean autoScrollToBottom = true;
 
     Loggers(Activity a) {
-        statusText = (TextView) a.findViewById(R.id.statusView);
-        debugText = (TextView) a.findViewById(R.id.debugView);
+        logText = (TextView) a.findViewById(R.id.logView);
         infoScroll = (ScrollView) a.findViewById(R.id.info_scroll);
 
         infoScroll.getViewTreeObserver().addOnScrollChangedListener(this);
@@ -37,15 +36,8 @@ class Loggers implements ViewTreeObserver.OnScrollChangedListener {
         lastInfoY = infoY;
     }
 
-    void appendStatus(String status) {
-        statusText.append(status + "\n");
-        if (autoScrollToBottom) {
-            infoScroll.fullScroll(View.FOCUS_DOWN);
-        }
-    }
-
-    void appendDebug(String debug) {
-        debugText.append(debug + "\n");
+    void append(String msg) {
+        logText.append(msg + "\n");
         if (autoScrollToBottom) {
             infoScroll.fullScroll(View.FOCUS_DOWN);
         }

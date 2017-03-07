@@ -9,16 +9,13 @@ import java.io.InputStream;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
-/**
- * Created by peter on 10/24/15.
- */
-public class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
+class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
 
     InputStream is;
     List<BluetoothMessageCallback> listeners;
     boolean heartbeat = false;
 
-    public ReadRobotDataTask(InputStream is, List<BluetoothMessageCallback> listeners) {
+    ReadRobotDataTask(InputStream is, List<BluetoothMessageCallback> listeners) {
         this.listeners = listeners;
         this.is = is;
     }
@@ -62,9 +59,8 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
             BTProtocol.Type properType;
             byte[] data = new byte[dataSize];
 
-            for (int i = 0; i < dataSize; i++) {
-                data[i] = packet[i + 5];
-            }
+            // copy bytes out of packet into data
+            System.arraycopy(data, 0, packet, 5, dataSize);
 
             if (type == BTProtocol.Type.HEARTBEAT.id()) {
                 properType = BTProtocol.Type.HEARTBEAT;
@@ -76,12 +72,30 @@ public class ReadRobotDataTask extends AsyncTask<Void, byte[], Boolean> {
                 properType = BTProtocol.Type.DEBUG;
             } else {
                 for (BluetoothMessageCallback listener : listeners) {
-                    listener.invalidMessage();
+                    listener.invalidMessage("Unknown packet type: " + type);
                 }
                 return;
             }
+
+            // check checksum
+            byte correct_checksum = BTProtocol.calcChecksum(data);
+            byte checksum = packet[packetSize - 1];
+
+            if (correct_checksum == checksum) {
+                for (BluetoothMessageCallback listener : listeners) {
+                    listener.validMessage(properType, data);
+                }
+            }
+            else {
+                for (BluetoothMessageCallback listener : listeners) {
+                    listener.invalidMessage("Checksum was " +
+                                            checksum + " but it should be " + correct_checksum);
+                }
+            }
+        }
+        else {
             for (BluetoothMessageCallback listener : listeners) {
-                listener.validMessage(properType, data);
+                listener.invalidMessage("Unknown packet type: " + packetSize);
             }
         }
     }

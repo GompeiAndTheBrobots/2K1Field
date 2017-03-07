@@ -3,16 +3,12 @@ package edu.wpi.rbe2001.field;
 import android.util.Log;
 
 import java.io.OutputStream;
-import java.util.Arrays;
 
-/**
- * Created by peter on 10/24/15.
- */
-public class SendFieldRunnable implements  Runnable{
+class SendFieldRunnable implements  Runnable{
 
     final private OutputStream os;
 
-    public SendFieldRunnable(OutputStream os){
+    SendFieldRunnable(OutputStream os){
         this.os = os;
     }
 
@@ -33,8 +29,6 @@ public class SendFieldRunnable implements  Runnable{
         byte[] supplyPacket = BTProtocol.createPacket(BTProtocol.Type.SUPPLY, (byte) 0,
                 (byte )0x0, supplyData);
 
-        Log.e("storage", Arrays.toString(storageData));
-        Log.e("supply", Arrays.toString(supplyData));
 
         try {
             os.write(supplyPacket);

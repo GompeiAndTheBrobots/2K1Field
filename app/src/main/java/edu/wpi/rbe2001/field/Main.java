@@ -25,10 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class Main extends AppCompatActivity implements BluetoothConnectionCallback,
         BluetoothMessageCallback,
         View.OnClickListener,
@@ -40,7 +36,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private FieldStateInterface fieldStateInterface;
 
     private RadioButton heartbeatIndicator;
-    private GestureDetectorCompat mDetector;
     private ImageView radiationIndicator;
     private TextView radiationInfo;
     private Loggers loggers;
@@ -74,11 +69,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         resetButton = (Button) findViewById(R.id.resetButton);
 
         loggers = new Loggers(this);
-
-        mDetector = new GestureDetectorCompat(this,
-                new SimpleGestureListener(this,
-                        BluetoothTester.class,
-                        SimpleGestureListener.RIGHT));
 
         stopButton.setOnClickListener(this);
         resumeButton.setOnClickListener(this);
@@ -118,12 +108,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
                 return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        this.mDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
     }
 
     private void setupBluetooth() {
@@ -208,27 +192,28 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
         } else if (type == BTProtocol.Type.ALERT) {
             indicateRadiation(data);
 
-        } else if (type == BTProtocol.Type.STATUS) {
+        } else if (type == BTProtocol.Type.STATUS || type == BTProtocol.Type.DEBUG) {
             long t = System.currentTimeMillis();
             long dt = t - lastStatusTime;
             if (dt > SPAM_TIME) {
                 lastStatusTime = t;
-                String status = BTProtocol.statusString(data);
-                loggers.appendStatus(status);
-            }
-
-        } else if (type == BTProtocol.Type.DEBUG) {
-            long t = System.currentTimeMillis();
-            long dt = t - lastDebugTime;
-            if (dt > SPAM_TIME) {
-                lastDebugTime = t;
-                String debug = "";
-                for (Byte b : data) {
-                    debug += (char) (b & 0xFF);
+                String msg = "";
+                if (type == BTProtocol.Type.STATUS) {
+                    msg = BTProtocol.statusString(data);
                 }
-                loggers.appendDebug(debug);
+                else {
+                    for (Byte b : data) {
+                        msg += (char) (b & 0xFF);
+                    }
+                }
+                loggers.append(msg);
             }
         }
+    }
+
+    @Override
+    public void invalidMessage(String msg) {
+        loggers.append(msg);
     }
 
     private void indicateRadiation(byte data[]) {
@@ -250,11 +235,6 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     public void robotDisconnected() {
         Toast.makeText(Main.this, "Robot disconnected", Toast.LENGTH_SHORT).show();
         comms.close();
-    }
-
-    @Override
-    public void invalidMessage() {
-        Toast.makeText(Main.this, "Invalid message were received!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

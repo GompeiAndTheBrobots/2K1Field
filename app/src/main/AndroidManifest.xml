@@ -30,11 +30,6 @@
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
-        <activity
-            android:name="edu.wpi.rbe2001.field.BluetoothTester"
-            android:label="BluetoothTester">
-
-        </activity>
     </application>
 
 </manifest>

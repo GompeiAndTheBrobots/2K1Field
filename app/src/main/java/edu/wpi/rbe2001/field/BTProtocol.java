@@ -94,7 +94,7 @@ abstract class BTProtocol {
         return msg;
     }
 
-    private static byte calcChecksum(byte[] packet) {
+    static byte calcChecksum(byte[] packet) {
         // 0xff minus the 8 bit sum of bytes from
         // offset 1 up to but no including this byte
         int sum = 0;
