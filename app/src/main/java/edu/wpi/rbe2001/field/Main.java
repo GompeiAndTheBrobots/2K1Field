@@ -2,12 +2,17 @@ package edu.wpi.rbe2001.field;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -97,6 +102,25 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.settings:
+                DeviceDialog d = new DeviceDialog();
+                d.show(getSupportFragmentManager(), "Device Dialog");
+                return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.mDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
@@ -105,17 +129,31 @@ public class Main extends AppCompatActivity implements BluetoothConnectionCallba
     private void setupBluetooth() {
         if (comms.exists()) {
             if (comms.enabled()) {
-                if (comms.detected()) {
-                    // this is asynchronous, and it should respond somehow...
-                    if (!comms.isConnected()) {
-                        comms.connect();
-                        comms.addConnectorListener(this);
-                        comms.addOnMessageListener(this);
-                    } else {
-                        Toast.makeText(Main.this, "Already connected", Toast.LENGTH_SHORT).show();
+                // get the bluetooth device name from settings
+                SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+                String robot_name = pref.getString(getString(R.string.robot_name), null);
+                if (robot_name == null) {
+                    // show dialog
+                    DeviceDialog dialog = new DeviceDialog();
+                    dialog.show(getSupportFragmentManager(), "Devices Dialog");
+                }
+                else {
+                    boolean success = comms.connectToDevice(robot_name);
+                    if (!success) {
+                        Toast.makeText(Main.this, "Couldn't connect to " + robot_name +
+                                        ". Reselect your robot.",
+                                Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(this, "No robot found!", Toast.LENGTH_LONG).show();
+                    else {
+                        // this is asynchronous, and it should respond somehow...
+                        if (!comms.isConnected()) {
+                            comms.connect();
+                            comms.addConnectorListener(this);
+                            comms.addOnMessageListener(this);
+                        } else {
+                            Toast.makeText(Main.this, "Already connected", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             } else {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);

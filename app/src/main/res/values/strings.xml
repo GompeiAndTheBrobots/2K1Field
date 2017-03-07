@@ -13,4 +13,7 @@
     <string name="heartbeat">Heartbeat</string>
     <string name="radiation">Radiation</string>
     <string name="none">None</string>
+    <string name="settings" />
+    <string name="robot_name">robot_name</string>
+    <string name="pick_robot">Select Your Robot</string>
 </resources>

@@ -2,6 +2,7 @@ package edu.wpi.rbe2001.field;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.widget.ArrayAdapter;
 import android.util.Log;
 
 import java.io.IOException;
@@ -16,12 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by peter on 10/24/15.
- */
-public class BTCommunicator implements BluetoothConnectionCallback {
+class BTCommunicator implements BluetoothConnectionCallback {
 
-    public static boolean sendingFieldData = false;
+    static boolean sendingFieldData = false;
     private BluetoothDevice robot;
     private BluetoothAdapter bTAdapter;
     private ScheduledThreadPoolExecutor fieldDataExecutor;
@@ -34,7 +32,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
 
     private static BTCommunicator instance;
 
-    public static BTCommunicator getInstance() {
+    static BTCommunicator getInstance() {
         if (instance == null) {
             instance = new BTCommunicator();
             instance.listeners = new ArrayList<>();
@@ -42,7 +40,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         return instance;
     }
 
-    public void addOnMessageListener(BluetoothMessageCallback listener){
+    void addOnMessageListener(BluetoothMessageCallback listener){
         listeners.add(listener);
     }
 
@@ -50,15 +48,31 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         bTAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
-    public boolean exists() {
+    boolean exists() {
         return bTAdapter != null;
     }
 
-    public boolean enabled() {
+    boolean enabled() {
         return bTAdapter.isEnabled();
     }
 
-    public boolean detected() {
+    List<String> getDeviceNames() {
+        Set<BluetoothDevice> pairedDevices = bTAdapter.getBondedDevices();
+        ArrayList<String> names = new ArrayList<String>();
+
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                names.add(device.getName());
+            }
+        }
+
+        return names;
+    }
+
+    boolean connectToDevice(String device_name) {
         Set<BluetoothDevice> pairedDevices = bTAdapter.getBondedDevices();
 
         // If there are paired devices
@@ -66,7 +80,11 @@ public class BTCommunicator implements BluetoothConnectionCallback {
 
             // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
-                if (foundRobot(device)) {
+                Log.w("Paired Device", device.getName());
+                if (device.getName().equals(device_name)) {
+                    robot = device;
+                    BTProtocol.TeamNumber = BTCommunicator.extractRobotNumber(device_name);
+                    Log.w("Team Number", String.valueOf(BTProtocol.TeamNumber));
                     return true;
                 }
             }
@@ -75,55 +93,52 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         return false;
     }
 
-    public boolean foundRobot(BluetoothDevice device) {
-        Pattern teamNumberPattern = Pattern.compile(".*BT.*([0-9]+)");
-        Matcher matcher = teamNumberPattern.matcher(device.getName());
+    static int extractRobotNumber(String device_name) {
+        Pattern teamNumberPattern = Pattern.compile(".*?([0-9]+).*");
+        Matcher matcher = teamNumberPattern.matcher(device_name);
         if (matcher.find()) {
-            Log.e("found team num", matcher.group(1));
             try {
-                robot = device;
-                BTProtocol.TeamNumber = Integer.parseInt(matcher.group(1));
-                return true;
+                return Integer.parseInt(matcher.group(1));
             } catch (NumberFormatException e) {
                 // no way will this actually happen...right?
                 e.printStackTrace();
             }
         }
-        Log.w("not team #", device.getName());
-        return false;
 
+        return 0xff;
     }
 
-    public boolean isConnected(){
+    boolean isConnected(){
         return connected;
     }
 
-    public void addConnectorListener(BluetoothConnectionCallback listener) {
+    void addConnectorListener(BluetoothConnectionCallback listener) {
         connector.addListener(listener);
     }
 
-    public void connect() {
+    void connect() {
         // spawn a new thread to try connecting
         connector = new BTConnector(robot);
         connector.addListener(this);
         connector.execute();
     }
 
-    public void close() {
+    void close() {
         connected = false;
         listeners.clear();
-        fieldDataExecutor.shutdownNow();
-        readDataTask.cancel(true);
+
         try {
+            fieldDataExecutor.shutdownNow();
+            readDataTask.cancel(true);
             connector.close();
             is.close();
             os.close();
-        } catch (IOException e) {
         } catch (Exception e) {
+            // we don't care, since the user is closing the app.
         }
     }
 
-    public void asyncSendStopMessage() {
+    void asyncSendStopMessage() {
         if (fieldDataExecutor != null) {
             try {
                 fieldDataExecutor.execute(new SendMessageRunnable(os,
@@ -134,7 +149,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         }
     }
 
-    public void asyncSendResumeMessage() {
+    void asyncSendResumeMessage() {
         if (fieldDataExecutor != null) {
             try {
                 fieldDataExecutor.execute(new SendMessageRunnable(os,
@@ -145,7 +160,7 @@ public class BTCommunicator implements BluetoothConnectionCallback {
         }
     }
 
-    public void asyncSendFieldData() {
+    private void asyncSendFieldData() {
         // start thread for sending BT data
         fieldDataExecutor = new ScheduledThreadPoolExecutor(8);
 
@@ -157,23 +172,19 @@ public class BTCommunicator implements BluetoothConnectionCallback {
                 TimeUnit.MILLISECONDS);
     }
 
-    public void stopListening(){
+    void stopListening(){
         if(readDataTask != null) {
             readDataTask.cancel(true);
         }
     }
 
-    public void asyncSendPacket(BTProtocol.Type msgType, byte fromID, byte toID, byte[] data) {
+    void asyncSendPacket(BTProtocol.Type msgType, byte fromID, byte toID, byte[] data) {
         fieldDataExecutor.execute(new SendMessageRunnable(os, msgType, fromID, toID, data));
     }
 
-    public void asyncReadRobotData(){
+    private void asyncReadRobotData(){
         readDataTask = new ReadRobotDataTask(is, listeners);
         readDataTask.execute();
-    }
-
-    public void stopListeneing(){
-        readDataTask.cancel(true);
     }
 
     @Override
